@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindBoard | Blindfold Chess Trainer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Oleo+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at center, #fdf1e4 0%, #f7d5b4 100%);
+            color: #551e19;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .oleo {
+            font-family: 'Oleo Script', system-ui;
+        }
+        @keyframes subtle-pulse {
+            0% { transform: scale(1); border-color: #e6b17e; box-shadow: 0 0 0 rgba(230, 177, 126, 0); }
+            50% { transform: scale(1.02); border-color: #551e19; box-shadow: 0 10px 20px rgba(85, 30, 25, 0.1); }
+            100% { transform: scale(1); border-color: #e6b17e; box-shadow: 0 0 0 rgba(230, 177, 126, 0); }
+        }
+        .animate-subtle-pulse {
+            animation: subtle-pulse 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+            z-index: 10;
+        }
+        @keyframes line-fade-out {
+            0% { opacity: 0.8; stroke-dashoffset: 0; }
+            100% { opacity: 0; stroke-dashoffset: -10; }
+        }
+        .animate-line-fade {
+            animation: line-fade-out 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-subtle {
+            animation: bounce-subtle 3s ease-in-out infinite;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.98); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 3s ease-in-out infinite;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .button-premium {
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .button-premium::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(230, 177, 126, 0.1);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.6s ease;
+            border-radius: 50%;
+        }
+        .button-premium:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
