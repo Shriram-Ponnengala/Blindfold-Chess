@@ -260,9 +260,9 @@ const App: React.FC = () => {
   );
 
   const renderGameScreen = () => (
-    <div className="flex flex-col items-center w-full max-w-7xl px-4 animate-in fade-in duration-700 pb-10 pt-6 lg:pt-10">
+    <div className="flex flex-col items-center w-full max-w-7xl px-4 animate-in fade-in duration-700 pb-10 pt-4 lg:pt-8">
       {/* HUD Dashboard */}
-      <div className="w-full max-w-[1000px] mb-6 lg:mb-10 select-none">
+      <div className="w-full max-w-[1000px] mb-4 lg:mb-8 select-none">
         <div className="glass-panel p-4 lg:p-6 rounded-2xl shadow-xl flex items-center justify-between border-white/50">
           <div className="flex items-center space-x-6 lg:space-x-10">
             <div className="flex flex-col">
