@@ -12,10 +12,16 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            background: radial-gradient(circle at center, #fdf1e4 0%, #f7d5b4 100%);
+            /* Primary Background: #f7d5b4 */
+            background-color: #f7d5b4;
+            /* Subtle radial gradient to Secondary Background #ffffff for depth */
+            background-image: radial-gradient(circle at 50% 30%, #fffbf5 0%, #f7d5b4 100%);
+            /* Primary Text: #551e19 */
             color: #551e19;
             min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         .serif {
             font-family: 'Playfair Display', serif;
@@ -24,12 +30,12 @@
             font-family: 'Oleo Script', system-ui;
         }
         @keyframes subtle-pulse {
-            0% { transform: scale(1); border-color: #e6b17e; box-shadow: 0 0 0 rgba(230, 177, 126, 0); }
-            50% { transform: scale(1.02); border-color: #551e19; box-shadow: 0 10px 20px rgba(85, 30, 25, 0.1); }
-            100% { transform: scale(1); border-color: #e6b17e; box-shadow: 0 0 0 rgba(230, 177, 126, 0); }
+            0% { transform: scale(1); border-color: #e6b17e; box-shadow: 0 0 0 rgba(85, 30, 25, 0); }
+            50% { transform: scale(1.02); border-color: #551e19; box-shadow: 0 10px 20px rgba(85, 30, 25, 0.08); }
+            100% { transform: scale(1); border-color: #e6b17e; box-shadow: 0 0 0 rgba(85, 30, 25, 0); }
         }
         .animate-subtle-pulse {
-            animation: subtle-pulse 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+            animation: subtle-pulse 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
             z-index: 10;
         }
         @keyframes line-fade-out {
@@ -41,27 +47,40 @@
         }
         @keyframes bounce-subtle {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+            50% { transform: translateY(-6px); }
         }
         .animate-bounce-subtle {
-            animation: bounce-subtle 3s ease-in-out infinite;
+            animation: bounce-subtle 4s ease-in-out infinite;
         }
         @keyframes pulse-slow {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.96); }
+            50% { opacity: 0.6; transform: scale(0.98); }
         }
         .animate-pulse-slow {
-            animation: pulse-slow 2.5s ease-in-out infinite;
+            animation: pulse-slow 3s ease-in-out infinite;
         }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            /* Secondary Background with transparency */
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            /* Highlight Outline / Subtle Border */
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            /* Warm shadow using Primary Text/Dark color */
+            box-shadow: 0 20px 40px -10px rgba(85, 30, 25, 0.08), 
+                        0 10px 10px -5px rgba(85, 30, 25, 0.04);
         }
         .button-premium {
             transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
             overflow: hidden;
+            border: 1px solid transparent;
+        }
+        .button-premium:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(85, 30, 25, 0.1);
+        }
+        .button-premium:active {
+            transform: translateY(0);
         }
         .button-premium::after {
             content: '';
@@ -70,7 +89,8 @@
             left: 50%;
             width: 300%;
             height: 300%;
-            background: rgba(230, 177, 126, 0.1);
+            /* Chessboard Light Square for ripple: #e6b17e */
+            background: rgba(230, 177, 126, 0.15);
             transform: translate(-50%, -50%) scale(0);
             transition: transform 0.6s ease;
             border-radius: 50%;
@@ -91,6 +111,5 @@
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
 </body>
 </html>
