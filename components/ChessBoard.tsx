@@ -71,11 +71,16 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveL
                 style={{ backgroundColor: getSquareColor(i) }}
                 className="relative flex items-center justify-center transition-colors duration-200"
               >
-                {/* Highlighted Target Square */}
+                {/* Highlighted Target Square - Enhanced Blue Visibility */}
                 {targetSquare === i && (
                   <div 
-                    className="absolute inset-0 bg-white/10 border-[4px] pointer-events-none z-10 animate-pulse-slow" 
-                    style={{ borderColor: 'rgba(255, 255, 255, 0.6)' }}
+                    className="absolute inset-0 z-10 animate-pulse-slow" 
+                    style={{ 
+                      backgroundColor: 'rgba(59, 130, 246, 0.4)', // Vibrant Blue Fill
+                      border: '6px solid rgba(37, 99, 235, 1)',  // Stronger Blue Border
+                      boxShadow: 'inset 0 0 15px rgba(255, 255, 255, 0.4), 0 0 20px rgba(59, 130, 246, 0.6)',
+                      pointerEvents: 'none'
+                    }}
                   />
                 )}
               </div>
@@ -88,8 +93,14 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveL
               const piece = pieces.find((p) => p.square === i);
               return (
                 <div key={i} className="flex items-center justify-center p-0.5">
-                  {piece && piece.isVisible && (
-                    <div className="w-[90%] h-[90%] flex items-center justify-center animate-in fade-in zoom-in duration-300">
+                  {piece && (
+                    <div 
+                      className="w-[90%] h-[90%] flex items-center justify-center transition-all duration-700 ease-out"
+                      style={{ 
+                        opacity: piece.isVisible ? 1 : 0,
+                        transform: piece.isVisible ? 'scale(1)' : 'scale(0.7)',
+                      }}
+                    >
                       {PIECE_ICONS[piece.color][piece.type]}
                     </div>
                   )}

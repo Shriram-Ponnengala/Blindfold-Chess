@@ -47,11 +47,11 @@
             animation: bounce-subtle 3s ease-in-out infinite;
         }
         @keyframes pulse-slow {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.98); }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.96); }
         }
         .animate-pulse-slow {
-            animation: pulse-slow 3s ease-in-out infinite;
+            animation: pulse-slow 2.5s ease-in-out infinite;
         }
         .glass-panel {
             background: rgba(255, 255, 255, 0.6);
@@ -91,6 +91,5 @@
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
 </body>
 </html>

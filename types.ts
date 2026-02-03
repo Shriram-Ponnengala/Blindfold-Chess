@@ -30,4 +30,5 @@ export interface GameState {
   correctMoves: number;
   currentStreak: number;
   bestStreak: number;
+  moveHistory: string[];
 }
