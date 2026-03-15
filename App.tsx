@@ -269,68 +269,70 @@ const App: React.FC = () => {
     <div className="flex flex-col items-center w-full max-w-7xl px-4 animate-in fade-in duration-700 pb-10 pt-4 lg:pt-8">
       <div className="w-full max-w-[1000px] mb-4 lg:mb-8 select-none">
         <div 
-          className="glass-panel p-4 lg:p-6 rounded-2xl flex items-center justify-between relative"
+          className="glass-panel p-4 lg:p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between relative gap-3 sm:gap-0"
           style={{ borderColor: 'rgba(255, 255, 255, 0.6)' }}
         >
           
-          {/* Left Section: Score & Time */}
-          <div className="flex items-center space-x-6 lg:space-x-10">
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black tracking-widest uppercase mb-1 opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>Score</span>
-              <span className="text-2xl lg:text-3xl font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>{state.score.toString().padStart(4, '0')}</span>
+          <div className="flex items-center justify-between w-full">
+            {/* Left Section: Score & Time */}
+            <div className="flex items-center space-x-4 sm:space-x-6 lg:space-x-10">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black tracking-widest uppercase mb-1 opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>Score</span>
+                <span className="text-2xl lg:text-3xl font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>{state.score.toString().padStart(4, '0')}</span>
+              </div>
+              <div className="flex flex-col border-l pl-4 sm:pl-6 lg:pl-10" style={{ borderColor: `${PALETTE.PRIMARY_TEXT}15` }}>
+                <span className="text-[10px] font-black tracking-widest uppercase mb-1 opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>Time</span>
+                <span className="text-2xl lg:text-3xl font-black tracking-tighter tabular-nums leading-none" style={{ color: state.timeLeft < 15 ? '#b91c1c' : PALETTE.PRIMARY_TEXT }}>{Math.floor(state.timeLeft / 60)}:{(state.timeLeft % 60).toString().padStart(2, '0')}</span>
+              </div>
             </div>
-            <div className="flex flex-col border-l pl-6 lg:pl-10" style={{ borderColor: `${PALETTE.PRIMARY_TEXT}15` }}>
-              <span className="text-[10px] font-black tracking-widest uppercase mb-1 opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>Time</span>
-              <span className="text-2xl lg:text-3xl font-black tracking-tighter tabular-nums leading-none" style={{ color: state.timeLeft < 15 ? '#b91c1c' : PALETTE.PRIMARY_TEXT }}>{Math.floor(state.timeLeft / 60)}:{(state.timeLeft % 60).toString().padStart(2, '0')}</span>
+
+            {/* Right Section: Buttons */}
+            <div className="flex items-center space-x-1 sm:space-x-2">
+              <button 
+                onClick={togglePause} 
+                disabled={state.phase !== 'PLAYING'} 
+                className="p-2 lg:p-2.5 rounded-full transition-all disabled:opacity-20 shadow-sm border"
+                style={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                  borderColor: 'rgba(255, 255, 255, 0.6)',
+                  color: PALETTE.PRIMARY_TEXT 
+                }}
+              >
+                {isPaused ? <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> : <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>}
+              </button>
+              <button 
+                onClick={toggleMute} 
+                className="p-2 lg:p-2.5 rounded-full transition-all shadow-sm border"
+                style={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                  borderColor: 'rgba(255, 255, 255, 0.6)',
+                  color: PALETTE.PRIMARY_TEXT 
+                }}
+              >
+                {isMuted ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>}
+              </button>
+              <button 
+                onClick={toggleFullscreen} 
+                className="p-2 lg:p-2.5 rounded-full transition-all shadow-sm border"
+                style={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                  borderColor: 'rgba(255, 255, 255, 0.6)',
+                  color: PALETTE.PRIMARY_TEXT 
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </button>
             </div>
           </div>
 
-          {/* Center Section: Strikes (Absolute Centered) */}
-          <div className="hidden sm:flex flex-col items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          {/* Center Section: Strikes */}
+          <div className="flex flex-col items-center sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 mt-1 sm:mt-0" style={{ borderColor: `${PALETTE.PRIMARY_TEXT}15` }}>
              <span className="text-[10px] font-black tracking-[0.2em] uppercase mb-2" style={{ color: PALETTE.PRIMARY_TEXT }}>Strikes</span>
              <div className="flex space-x-2">
                 {Array.from({ length: MAX_STRIKES }).map((_, i) => (
                   <div key={i} className="w-8 h-2 rounded-sm" style={{ backgroundColor: i < state.strikes ? '#b91c1c' : `${PALETTE.BOARD_DARK}15` }} />
                 ))}
              </div>
-          </div>
-
-          {/* Right Section: Buttons */}
-          <div className="flex items-center space-x-2">
-            <button 
-              onClick={togglePause} 
-              disabled={state.phase !== 'PLAYING'} 
-              className="p-2 lg:p-2.5 rounded-full transition-all disabled:opacity-20 shadow-sm border"
-              style={{ 
-                backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                borderColor: 'rgba(255, 255, 255, 0.6)',
-                color: PALETTE.PRIMARY_TEXT 
-              }}
-            >
-              {isPaused ? <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> : <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>}
-            </button>
-            <button 
-              onClick={toggleMute} 
-              className="p-2 lg:p-2.5 rounded-full transition-all shadow-sm border"
-              style={{ 
-                backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                borderColor: 'rgba(255, 255, 255, 0.6)',
-                color: PALETTE.PRIMARY_TEXT 
-              }}
-            >
-              {isMuted ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>}
-            </button>
-            <button 
-              onClick={toggleFullscreen} 
-              className="p-2 lg:p-2.5 rounded-full transition-all shadow-sm border"
-              style={{ 
-                backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                borderColor: 'rgba(255, 255, 255, 0.6)',
-                color: PALETTE.PRIMARY_TEXT 
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-            </button>
           </div>
         </div>
       </div>
