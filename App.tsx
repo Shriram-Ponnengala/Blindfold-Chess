@@ -249,7 +249,10 @@ const App: React.FC = () => {
       
       <div className="text-center relative px-4 z-10">
         <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-[1px] opacity-30" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
-        <h1 className="text-4xl sm:text-5xl md:text-6xl oleo tracking-wide mb-2 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Blindfold Chess Trainer - MindBoard</h1>
+        <h1 className="oleo tracking-wide mb-2 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>
+          <span className="block text-3xl sm:text-4xl md:text-5xl opacity-90">Blindfold Chess Trainer</span>
+          <span className="block text-5xl sm:text-6xl md:text-8xl mt-1">MindBoard</span>
+        </h1>
         <p className="font-bold tracking-[0.2em] sm:tracking-[0.6em] text-[8px] sm:text-[10px] uppercase opacity-60 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Train your blindfold chess the right way</p>
       </div>
       <div className="grid grid-cols-1 gap-6 w-80 z-10">
