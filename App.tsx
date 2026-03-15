@@ -239,10 +239,10 @@ const App: React.FC = () => {
 
   const renderStartScreen = () => (
     <div className="flex flex-col items-center justify-center min-h-[85vh] space-y-16 animate-in fade-in duration-1000">
-      <div className="text-center relative">
+      <div className="text-center relative px-4">
         <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-[1px] opacity-30" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
-        <h1 className="text-6xl oleo tracking-wide mb-2 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Blindfold Chess Trainer - MindBoard</h1>
-        <p className="font-bold tracking-[0.6em] text-[10px] uppercase opacity-60 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Train your blindfold chess the right way</p>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl oleo tracking-wide mb-2 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Blindfold Chess Trainer - MindBoard</h1>
+        <p className="font-bold tracking-[0.2em] sm:tracking-[0.6em] text-[8px] sm:text-[10px] uppercase opacity-60 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Train your blindfold chess the right way</p>
       </div>
       <div className="grid grid-cols-1 gap-6 w-80">
         {[ { id: Difficulty.EASY, label: 'Easy' }, { id: Difficulty.INTERMEDIATE, label: 'Medium' }, { id: Difficulty.HARD, label: 'Hard' } ].map(diff => (
@@ -434,16 +434,16 @@ const App: React.FC = () => {
         
         {/* Header */}
         <div className="space-y-4">
-          <h2 className="text-5xl lg:text-6xl serif italic tracking-wide" style={{ color: PALETTE.PRIMARY_TEXT }}>Game Over</h2>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl serif italic tracking-wide" style={{ color: PALETTE.PRIMARY_TEXT }}>Game Over</h2>
           <div className="h-[1px] w-32 mx-auto opacity-10" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
         </div>
 
         {/* Large Score */}
         <div className="flex flex-col items-center py-2 lg:py-4">
-          <span className="text-[100px] lg:text-[140px] font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
+          <span className="text-[80px] sm:text-[100px] lg:text-[140px] font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
              {state.score}
           </span>
-           <span className="uppercase tracking-[0.6em] text-[10px] font-bold opacity-40 mt-4" style={{ color: PALETTE.PRIMARY_TEXT }}>Final Score</span>
+           <span className="uppercase tracking-[0.3em] sm:tracking-[0.6em] text-[8px] sm:text-[10px] font-bold opacity-40 mt-4" style={{ color: PALETTE.PRIMARY_TEXT }}>Final Score</span>
         </div>
 
         {/* Quote */}
