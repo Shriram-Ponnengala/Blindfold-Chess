@@ -433,7 +433,7 @@ const App: React.FC = () => {
               );
             })}
           </div>
-          <div className="mt-6 lg:mt-8 text-[10px] lg:text-[11px] font-black uppercase tracking-[0.3em] lg:tracking-[0.4em] text-center lg:text-left serif italic opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>{state.phase === 'OBSERVING' ? 'Awaiting mental snapshot' : isPaused ? 'Analysis Suspended' : ''}</div>
+          <div className="mt-6 lg:mt-8 text-[10px] lg:text-[11px] font-black uppercase tracking-[0.3em] lg:tracking-[0.4em] text-center lg:text-left serif italic opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>{isPaused ? 'Analysis Suspended' : ''}</div>
         </div>
       </div>
     </div>
