@@ -14,8 +14,12 @@
             padding: 0;
             /* Primary Background: #f7d5b4 */
             background-color: #f7d5b4;
-            /* Subtle radial gradient to Secondary Background #ffffff for depth */
-            background-image: radial-gradient(circle at 50% 30%, #fffbf5 0%, #f7d5b4 100%);
+            /* Subtle radial gradient + Chessboard texture */
+            background-image: 
+                radial-gradient(circle at 50% 30%, rgba(255, 251, 245, 0.85) 0%, rgba(247, 213, 180, 0.95) 100%),
+                conic-gradient(rgba(85, 30, 25, 0.06) 90deg, transparent 90deg 180deg, rgba(85, 30, 25, 0.06) 180deg 270deg, transparent 270deg);
+            background-size: 100% 100%, 120px 120px;
+            background-attachment: fixed;
             /* Primary Text: #551e19 */
             color: #551e19;
             min-height: 100vh;

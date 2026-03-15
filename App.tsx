@@ -238,13 +238,21 @@ const App: React.FC = () => {
   };
 
   const renderStartScreen = () => (
-    <div className="flex flex-col items-center justify-center min-h-[85vh] space-y-16 animate-in fade-in duration-1000">
-      <div className="text-center relative px-4">
+    <div className="flex flex-col items-center justify-center min-h-[85vh] space-y-16 animate-in fade-in duration-1000 relative overflow-hidden">
+      {/* Subtle background piece textures */}
+      <div className="absolute top-10 -left-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] -rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
+        {PIECE_ICONS['WHITE']['KNIGHT']}
+      </div>
+      <div className="absolute bottom-10 -right-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
+        {PIECE_ICONS['WHITE']['ROOK']}
+      </div>
+      
+      <div className="text-center relative px-4 z-10">
         <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-[1px] opacity-30" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
         <h1 className="text-4xl sm:text-5xl md:text-6xl oleo tracking-wide mb-2 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Blindfold Chess Trainer - MindBoard</h1>
         <p className="font-bold tracking-[0.2em] sm:tracking-[0.6em] text-[8px] sm:text-[10px] uppercase opacity-60 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Train your blindfold chess the right way</p>
       </div>
-      <div className="grid grid-cols-1 gap-6 w-80">
+      <div className="grid grid-cols-1 gap-6 w-80 z-10">
         {[ { id: Difficulty.EASY, label: 'Easy' }, { id: Difficulty.INTERMEDIATE, label: 'Medium' }, { id: Difficulty.HARD, label: 'Hard' } ].map(diff => (
           <button 
             key={diff.id} 
@@ -261,7 +269,7 @@ const App: React.FC = () => {
           </button>
         ))}
       </div>
-      <div className="pt-12 opacity-80 italic text-[14px] serif text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>"Vision is the art of seeing what is invisible to others."</div>
+      <div className="pt-12 opacity-80 italic text-[14px] serif text-center z-10" style={{ color: PALETTE.PRIMARY_TEXT }}>"Vision is the art of seeing what is invisible to others."</div>
     </div>
   );
 
@@ -430,16 +438,24 @@ const App: React.FC = () => {
 
   const renderGameOver = () => {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[90vh] py-12 px-6 space-y-8 animate-in fade-in zoom-in duration-1000 max-w-3xl text-center">
+      <div className="flex flex-col items-center justify-center min-h-[90vh] py-12 px-6 space-y-8 animate-in fade-in zoom-in duration-1000 max-w-3xl text-center relative overflow-hidden">
         
+        {/* Subtle background piece textures */}
+        <div className="absolute top-20 -left-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] -rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
+          {PIECE_ICONS['WHITE']['QUEEN']}
+        </div>
+        <div className="absolute bottom-20 -right-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
+          {PIECE_ICONS['WHITE']['KING']}
+        </div>
+
         {/* Header */}
-        <div className="space-y-4">
+        <div className="space-y-4 z-10">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl serif italic tracking-wide" style={{ color: PALETTE.PRIMARY_TEXT }}>Game Over</h2>
           <div className="h-[1px] w-32 mx-auto opacity-10" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
         </div>
 
         {/* Large Score */}
-        <div className="flex flex-col items-center py-2 lg:py-4">
+        <div className="flex flex-col items-center py-2 lg:py-4 z-10">
           <span className="text-[80px] sm:text-[100px] lg:text-[140px] font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
              {state.score}
           </span>
@@ -447,12 +463,12 @@ const App: React.FC = () => {
         </div>
 
         {/* Quote */}
-        <div className="max-w-md mx-auto">
+        <div className="max-w-md mx-auto z-10">
             <p className="text-lg lg:text-xl serif italic opacity-80" style={{ color: PALETTE.PRIMARY_TEXT }}>“Visualization improves by doing.”</p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-8 w-full max-w-md pt-6 mt-4" style={{ borderTop: `1px solid ${PALETTE.PRIMARY_TEXT}10` }}>
+        <div className="grid grid-cols-2 gap-8 w-full max-w-md pt-6 mt-4 z-10" style={{ borderTop: `1px solid ${PALETTE.PRIMARY_TEXT}10` }}>
           <div className="flex flex-col items-center justify-center space-y-1">
               <span className="uppercase tracking-[0.2em] text-[9px] font-black opacity-30" style={{ color: PALETTE.PRIMARY_TEXT }}>Correct Moves</span>
               <span className="text-2xl font-black tabular-nums" style={{ color: PALETTE.PRIMARY_TEXT }}>{state.correctMoves}</span>
@@ -464,7 +480,7 @@ const App: React.FC = () => {
         </div>
 
         {/* CTA & Buttons */}
-        <div className="flex flex-col items-center space-y-6 pt-8">
+        <div className="flex flex-col items-center space-y-6 pt-8 z-10">
             <p className="uppercase tracking-[0.3em] text-[10px] font-black opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>Ready to try again?</p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 lg:space-x-8">
             <button onClick={restartCurrentDrill} className="button-premium border py-4 px-10 text-[10px] font-black uppercase tracking-[0.3em] rounded-sm" style={{ backgroundColor: PALETTE.SECONDARY_BG, borderColor: `${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT, boxShadow: `0 4px 6px -1px ${PALETTE.BOARD_DARK}10` }}>Restart Game</button>
