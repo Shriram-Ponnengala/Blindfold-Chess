@@ -321,86 +321,84 @@ const App: React.FC = () => {
   );
 
   const renderGameScreen = () => (
-    <div className="flex flex-col items-center w-full max-w-7xl px-4 animate-in fade-in duration-700 pb-10 pt-4 lg:pt-8">
-      <div className="w-full max-w-[1000px] mb-4 lg:mb-8 select-none">
+    <div className="flex flex-col items-center w-full max-w-7xl px-4 animate-in fade-in duration-700 pb-10 pt-4 lg:pt-8 overflow-hidden box-border">
+      {/* Mobile Optimized HUD */}
+      <div className="w-full max-w-[500px] mb-6 select-none flex flex-col items-center">
+        {/* Main Stats Bar */}
         <div 
-          className="glass-panel p-4 lg:p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between relative gap-3 sm:gap-0"
-          style={{ borderColor: 'rgba(255, 255, 255, 0.6)' }}
+          className="w-full bg-white/90 backdrop-blur-md rounded-[12px] p-[10px_16px] flex items-center justify-between shadow-sm border border-black/5 box-border"
+          style={{ maxWidth: '100%' }}
         >
-          
-          <div className="flex items-center justify-between w-full">
-            {/* Left Section: Score & Time */}
-            <div className="flex items-center space-x-4 sm:space-x-6 lg:space-x-10">
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black tracking-widest uppercase mb-1 opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>Score</span>
-                <span className="text-2xl lg:text-3xl font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>{state.score.toString().padStart(4, '0')}</span>
-              </div>
-              <div className="flex flex-col border-l pl-4 sm:pl-6 lg:pl-10" style={{ borderColor: `${PALETTE.PRIMARY_TEXT}15` }}>
-                <span className="text-[10px] font-black tracking-widest uppercase mb-1 opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>Time</span>
-                <span className="text-2xl lg:text-3xl font-black tracking-tighter tabular-nums leading-none" style={{ color: state.timeLeft < 15 ? '#b91c1c' : PALETTE.PRIMARY_TEXT }}>{Math.floor(state.timeLeft / 60)}:{(state.timeLeft % 60).toString().padStart(2, '0')}</span>
-              </div>
-            </div>
-
-            {/* Right Section: Buttons */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
-              <button 
-                onClick={goHome} 
-                className="flex items-center space-x-1.5 px-3 py-2 lg:px-4 lg:py-2.5 rounded-full transition-all shadow-sm border text-[10px] font-black uppercase tracking-widest"
-                style={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  borderColor: 'rgba(255, 255, 255, 0.6)',
-                  color: PALETTE.PRIMARY_TEXT 
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                <span className="hidden sm:inline">Menu</span>
-              </button>
-              <button 
-                onClick={togglePause} 
-                disabled={state.phase !== 'PLAYING'} 
-                className="p-2 lg:p-2.5 rounded-full transition-all disabled:opacity-20 shadow-sm border"
-                style={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  borderColor: 'rgba(255, 255, 255, 0.6)',
-                  color: PALETTE.PRIMARY_TEXT 
-                }}
-              >
-                {isPaused ? <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> : <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>}
-              </button>
-              <button 
-                onClick={toggleMute} 
-                className="p-2 lg:p-2.5 rounded-full transition-all shadow-sm border"
-                style={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  borderColor: 'rgba(255, 255, 255, 0.6)',
-                  color: PALETTE.PRIMARY_TEXT 
-                }}
-              >
-                {isMuted ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>}
-              </button>
-              <button 
-                onClick={toggleFullscreen} 
-                className="p-2 lg:p-2.5 rounded-full transition-all shadow-sm border"
-                style={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                  borderColor: 'rgba(255, 255, 255, 0.6)',
-                  color: PALETTE.PRIMARY_TEXT 
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-              </button>
-            </div>
+          {/* Left: Score */}
+          <div className="flex flex-col items-start">
+            <span className="text-[10px] font-black tracking-[0.2em] uppercase opacity-40 leading-none mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Score</span>
+            <span className="text-[22px] font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
+              {state.score.toString().padStart(4, '0')}
+            </span>
           </div>
 
-          {/* Center Section: Strikes */}
-          <div className="flex flex-col items-center sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 mt-1 sm:mt-0" style={{ borderColor: `${PALETTE.PRIMARY_TEXT}15` }}>
-             <span className="text-[10px] font-black tracking-[0.2em] uppercase mb-2" style={{ color: PALETTE.PRIMARY_TEXT }}>Strikes</span>
-             <div className="flex space-x-2">
-                {Array.from({ length: MAX_STRIKES }).map((_, i) => (
-                  <div key={i} className="w-8 h-2 rounded-sm" style={{ backgroundColor: i < state.strikes ? '#b91c1c' : `${PALETTE.BOARD_DARK}15` }} />
-                ))}
-             </div>
+          {/* Center: Strikes */}
+          <div className="flex space-x-1.5 items-center justify-center">
+            {Array.from({ length: MAX_STRIKES }).map((_, i) => (
+              <div 
+                key={i} 
+                className="w-[10px] h-[6px] rounded-full transition-colors duration-300" 
+                style={{ backgroundColor: i < state.strikes ? '#E24B4A' : '#e5e7eb' }} 
+              />
+            ))}
           </div>
+
+          {/* Right: Time */}
+          <div className="flex flex-col items-end">
+            <span className="text-[10px] font-black tracking-[0.2em] uppercase opacity-40 leading-none mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Time</span>
+            <span className="text-[22px] font-black tracking-tighter tabular-nums leading-none" style={{ color: state.timeLeft < 15 ? '#E24B4A' : PALETTE.PRIMARY_TEXT }}>
+              {Math.floor(state.timeLeft / 60)}:{(state.timeLeft % 60).toString().padStart(2, '0')}
+            </span>
+          </div>
+        </div>
+
+        {/* Controls Row */}
+        <div className="w-full flex items-center justify-between mt-3 px-2 box-border">
+          {/* Home/Menu */}
+          <button 
+            onClick={goHome} 
+            className="w-11 h-11 flex items-center justify-center rounded-full transition-all active:scale-90"
+            style={{ color: PALETTE.PRIMARY_TEXT }}
+            aria-label="Home Menu"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </button>
+
+          {/* Pause */}
+          <button 
+            onClick={togglePause} 
+            disabled={state.phase !== 'PLAYING'} 
+            className="w-11 h-11 flex items-center justify-center rounded-full transition-all active:scale-90 disabled:opacity-20"
+            style={{ color: PALETTE.PRIMARY_TEXT }}
+            aria-label={isPaused ? "Resume" : "Pause"}
+          >
+            {isPaused ? <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> : <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>}
+          </button>
+
+          {/* Sound */}
+          <button 
+            onClick={toggleMute} 
+            className="w-11 h-11 flex items-center justify-center rounded-full transition-all active:scale-90"
+            style={{ color: PALETTE.PRIMARY_TEXT }}
+            aria-label={isMuted ? "Unmute" : "Mute"}
+          >
+            {isMuted ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>}
+          </button>
+
+          {/* Fullscreen - Hidden on mobile as per requirement */}
+          <button 
+            onClick={toggleFullscreen} 
+            className="hidden lg:flex w-11 h-11 items-center justify-center rounded-full transition-all active:scale-90"
+            style={{ color: PALETTE.PRIMARY_TEXT }}
+            aria-label="Toggle Fullscreen"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          </button>
         </div>
       </div>
       {state.phase === 'OBSERVING' && (
