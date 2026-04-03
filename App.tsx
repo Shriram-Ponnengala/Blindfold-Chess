@@ -270,7 +270,7 @@ const App: React.FC = () => {
         {/* EASY CARD */}
         <button 
           onClick={() => startGame(Difficulty.EASY)}
-          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl group"
+          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl hover:border-[#8a5c2e] group"
         >
           <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['PAWN']}</div>
           <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Easy</h3>
@@ -285,7 +285,7 @@ const App: React.FC = () => {
         {/* MEDIUM CARD */}
         <button 
           onClick={() => startGame(Difficulty.INTERMEDIATE)}
-          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl group"
+          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl hover:border-[#8a5c2e] group"
         >
           <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['KNIGHT']}</div>
           <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Medium</h3>
@@ -300,8 +300,7 @@ const App: React.FC = () => {
         {/* HARD CARD */}
         <button 
           onClick={() => startGame(Difficulty.HARD)}
-          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border-2 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl group"
-          style={{ borderColor: '#d97706' }}
+          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl hover:border-[#c47a3a] group"
         >
           <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['QUEEN']}</div>
           <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Hard</h3>
