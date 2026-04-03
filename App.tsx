@@ -227,7 +227,7 @@ const App: React.FC = () => {
   };
 
   const renderStartScreen = () => (
-    <div className="flex flex-col items-center justify-center min-h-[85vh] space-y-16 animate-in fade-in duration-1000 relative overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-h-[90vh] py-12 animate-in fade-in duration-1000 relative overflow-hidden">
       {/* Subtle background piece textures */}
       <div className="absolute top-10 -left-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] -rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
         {PIECE_ICONS['WHITE']['KNIGHT']}
@@ -235,33 +235,74 @@ const App: React.FC = () => {
       <div className="absolute bottom-10 -right-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
         {PIECE_ICONS['WHITE']['ROOK']}
       </div>
+
+      {/* Ghost pieces at the top */}
+      <div className="flex items-end justify-center space-x-8 mb-8 opacity-10 pointer-events-none">
+        <div className="w-12 h-12">{PIECE_ICONS['WHITE']['QUEEN']}</div>
+        <div className="w-10 h-10">{PIECE_ICONS['WHITE']['ROOK']}</div>
+        <div className="w-12 h-12">{PIECE_ICONS['WHITE']['BISHOP']}</div>
+      </div>
       
-      <div className="text-center relative px-4 z-10">
-        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-[1px] opacity-30" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
-        <h1 className="oleo tracking-wide mb-2 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>
-          <span className="block text-3xl sm:text-4xl md:text-5xl opacity-90">Blindfold Chess Trainer</span>
-          <span className="block text-5xl sm:text-6xl md:text-8xl mt-1">MindBoard</span>
-        </h1>
-        <p className="font-bold tracking-[0.2em] sm:tracking-[0.6em] text-[8px] sm:text-[10px] uppercase opacity-60 text-center" style={{ color: PALETTE.PRIMARY_TEXT }}>Train your blindfold chess the right way</p>
+      <div className="text-center relative px-4 z-10 mb-12">
+        <div className="flex flex-col items-center">
+          <div className="w-8 h-8 opacity-20 mb-2">{PIECE_ICONS['WHITE']['KNIGHT']}</div>
+          <span className="block text-sm sm:text-base font-medium tracking-[0.2em] uppercase opacity-60 mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Blindfold Chess Trainer</span>
+          <h1 className="serif text-6xl sm:text-7xl md:text-8xl italic leading-tight" style={{ color: PALETTE.PRIMARY_TEXT }}>MindBoard</h1>
+          <p className="font-bold tracking-[0.3em] text-[10px] sm:text-[12px] uppercase opacity-60 mt-4 max-w-xs sm:max-w-none" style={{ color: PALETTE.PRIMARY_TEXT }}>Train your blindfold chess the right way</p>
+        </div>
       </div>
-      <div className="grid grid-cols-1 gap-6 w-80 z-10">
-        {[ { id: Difficulty.EASY, label: 'Easy' }, { id: Difficulty.INTERMEDIATE, label: 'Medium' }, { id: Difficulty.HARD, label: 'Hard' } ].map(diff => (
-          <button 
-            key={diff.id} 
-            onClick={() => startGame(diff.id)} 
-            className="button-premium py-5 px-8 transition-all uppercase tracking-[0.25em] text-[11px] font-bold rounded-sm" 
-            style={{ 
-              backgroundColor: PALETTE.SECONDARY_BG, 
-              border: `1px solid ${PALETTE.PRIMARY_TEXT}20`,
-              color: PALETTE.PRIMARY_TEXT,
-              boxShadow: `0 4px 6px -1px ${PALETTE.BOARD_DARK}10, 0 2px 4px -1px ${PALETTE.BOARD_DARK}06`
-            }}
-          >
-            {diff.label}
-          </button>
-        ))}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 w-full max-w-5xl z-10">
+        {/* EASY CARD */}
+        <button 
+          onClick={() => startGame(Difficulty.EASY)}
+          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl group"
+        >
+          <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['PAWN']}</div>
+          <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Easy</h3>
+          <div className="w-12 h-[1px] bg-black/10 mb-6" />
+          <div className="space-y-2 mb-8">
+            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>3 pieces</p>
+            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>1 confuser nearby</p>
+          </div>
+          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#e0f2f1] text-[#00695c]">Beginner</span>
+        </button>
+
+        {/* MEDIUM CARD */}
+        <button 
+          onClick={() => startGame(Difficulty.INTERMEDIATE)}
+          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl group"
+        >
+          <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['KNIGHT']}</div>
+          <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Medium</h3>
+          <div className="w-12 h-[1px] bg-black/10 mb-6" />
+          <div className="space-y-2 mb-8">
+            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>4 pieces</p>
+            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>2 confusers nearby</p>
+          </div>
+          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fef3c7] text-[#92400e]">Developing</span>
+        </button>
+
+        {/* HARD CARD */}
+        <button 
+          onClick={() => startGame(Difficulty.HARD)}
+          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border-2 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl group"
+          style={{ borderColor: '#d97706' }}
+        >
+          <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['QUEEN']}</div>
+          <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Hard</h3>
+          <div className="w-12 h-[1px] bg-black/10 mb-6" />
+          <div className="space-y-2 mb-8">
+            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>5 pieces</p>
+            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>2 knights or 2 bishops</p>
+          </div>
+          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fce7f3] text-[#9d174d]">Advanced</span>
+        </button>
       </div>
-      <div className="pt-12 opacity-80 italic text-[14px] serif text-center z-10" style={{ color: PALETTE.PRIMARY_TEXT }}>"Vision is the art of seeing what is invisible to others."</div>
+
+      <div className="mt-16 opacity-80 italic text-[16px] serif text-center z-10 px-6" style={{ color: PALETTE.PRIMARY_TEXT }}>
+        "Vision is the art of seeing what is invisible to others."
+      </div>
     </div>
   );
 
