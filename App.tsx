@@ -124,7 +124,21 @@ const App: React.FC = () => {
   const goHome = () => {
     setIsPaused(false);
     setIsProcessing(false);
-    setState(prev => ({ ...prev, phase: 'START' }));
+    setCountdown(null);
+    setState({
+      phase: 'START',
+      difficulty: Difficulty.EASY,
+      pieces: [],
+      targetSquare: null,
+      score: 0,
+      strikes: 0,
+      timeLeft: START_TIME,
+      lastMoveLine: null,
+      correctMoves: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      moveHistory: [],
+    });
   };
 
   const togglePause = () => {
@@ -329,6 +343,18 @@ const App: React.FC = () => {
 
             {/* Right Section: Buttons */}
             <div className="flex items-center space-x-1 sm:space-x-2">
+              <button 
+                onClick={goHome} 
+                className="flex items-center space-x-1.5 px-3 py-2 lg:px-4 lg:py-2.5 rounded-full transition-all shadow-sm border text-[10px] font-black uppercase tracking-widest"
+                style={{ 
+                  backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                  borderColor: 'rgba(255, 255, 255, 0.6)',
+                  color: PALETTE.PRIMARY_TEXT 
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span className="hidden sm:inline">Menu</span>
+              </button>
               <button 
                 onClick={togglePause} 
                 disabled={state.phase !== 'PLAYING'} 
