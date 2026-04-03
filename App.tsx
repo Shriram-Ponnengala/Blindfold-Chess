@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GameState, GamePhase, Difficulty, Piece, PieceType } from './types';
-import { getRandomSquare, generateTargetSquare, canPieceReach } from './services/chessLogic';
+import { getRandomSquare, generateTargetSquare, canPieceReach, generatePosition, findValidTarget, squareToNotation } from './services/chessLogic';
 import { PALETTE, PIECE_ICONS } from './constants';
 import ChessBoard from './components/ChessBoard';
 import { soundService } from './services/soundService';
@@ -60,19 +60,8 @@ const App: React.FC = () => {
   }, []);
 
   const startGame = (diff: Difficulty) => {
-    let pieceCount = diff === Difficulty.EASY ? 2 : diff === Difficulty.INTERMEDIATE ? 3 : 4;
-    const availableTypes: PieceType[] = ['QUEEN', 'ROOK', 'BISHOP', 'KNIGHT'];
-    const shuffledTypes = [...availableTypes].sort(() => Math.random() - 0.5);
-    const selectedTypes = shuffledTypes.slice(0, pieceCount);
-    
-    const selectedPieces: Piece[] = [];
-    const usedSquares: number[] = [];
-
-    selectedTypes.forEach((type, i) => {
-      const square = getRandomSquare(usedSquares);
-      usedSquares.push(square);
-      selectedPieces.push({ id: `p-${i}`, type, color: 'WHITE', square, isVisible: true });
-    });
+    const setup = generatePosition(diff);
+    if (!setup) return; // Should not happen with 300 attempts
 
     setIsPaused(false);
     setIsProcessing(false);
@@ -80,7 +69,7 @@ const App: React.FC = () => {
     setState({
       phase: 'OBSERVING',
       difficulty: diff,
-      pieces: selectedPieces,
+      pieces: setup.pieces,
       targetSquare: null,
       score: 0,
       strikes: 0,
@@ -111,7 +100,7 @@ const App: React.FC = () => {
         if (prev.phase !== 'OBSERVING') return prev;
         
         // Generate the first target based on initial positions
-        const nextTarget = generateTargetSquare(prev.pieces, prev.moveHistory);
+        const nextTarget = findValidTarget(prev.pieces, prev.difficulty);
         
         return {
           ...prev,
@@ -185,7 +174,7 @@ const App: React.FC = () => {
           if (updatedHistory.length > 5) updatedHistory.shift();
 
           // Generate next target based on new positions
-          const nextTarget = generateTargetSquare(updatedPieces, updatedHistory);
+          const nextTarget = findValidTarget(updatedPieces, prev.difficulty);
           const newStreak = prev.currentStreak + 1;
           
           return {
@@ -351,6 +340,14 @@ const App: React.FC = () => {
         <div className="w-full text-center mb-6 animate-in slide-in-from-top-4 duration-500">
            <p className="serif italic text-2xl lg:text-3xl tracking-wide opacity-90" style={{ color: PALETTE.PRIMARY_TEXT }}>Analyze piece positions carefully.</p>
            <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40 mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Memorization Phase</p>
+        </div>
+      )}
+      {state.phase === 'PLAYING' && !isPaused && state.targetSquare !== null && (
+        <div className="w-full text-center mb-6 animate-in slide-in-from-top-4 duration-500">
+           <p className="serif italic text-3xl lg:text-4xl tracking-wide opacity-90" style={{ color: PALETTE.PRIMARY_TEXT }}>
+             Move to <span className="font-black not-italic uppercase">{squareToNotation(state.targetSquare)}</span>
+           </p>
+           <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40 mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Target Square</p>
         </div>
       )}
       <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 lg:gap-12 w-full max-w-[1100px]">
