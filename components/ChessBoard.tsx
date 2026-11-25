@@ -162,17 +162,17 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveL
             style={{ left: `${(pop.square % 8) * 12.5 + 6.25}%`, top: `${Math.floor(pop.square / 8) * 12.5 + 6.25}%` }}
           >
             <span
-              className="font-extrabold text-2xl sm:text-3xl leading-none px-3 py-1.5 rounded-full text-white tabular-nums"
+              className="font-extrabold text-4xl sm:text-5xl lg:text-6xl leading-none px-5 py-2.5 sm:px-6 sm:py-3 rounded-full text-white tabular-nums"
               style={{
                 backgroundColor: pop.tone === 'good' ? BOARD_THEME.TARGET : '#c0392b',
-                boxShadow: '0 6px 16px -4px rgba(0,0,0,0.45), 0 0 0 2px rgba(255,255,255,0.85)',
+                boxShadow: '0 10px 24px -6px rgba(0,0,0,0.5), 0 0 0 3px rgba(255,255,255,0.9)',
               }}
             >
               {pop.text}
             </span>
             {pop.sub && (
               <span
-                className="mt-1 text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap"
+                className="mt-1.5 text-sm sm:text-base font-bold px-3 py-1 rounded-full whitespace-nowrap"
                 style={{ backgroundColor: 'rgba(255,255,255,0.95)', color: pop.tone === 'good' ? BOARD_THEME.TARGET : '#c0392b' }}
               >
                 {pop.sub}
