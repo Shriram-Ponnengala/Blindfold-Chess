@@ -256,7 +256,7 @@ const App: React.FC = () => {
       <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 py-10 lg:py-12 animate-in fade-in duration-700 box-border" style={{ color: PALETTE.PRIMARY_TEXT }}>
         {/* Brand */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-[#fffaf5] border border-black/5 shadow-sm flex items-center justify-center p-2">
+          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-[#111] shadow-lg flex items-center justify-center p-2">
             {PIECE_ICONS['WHITE']['KNIGHT']}
           </div>
           <h1 className="serif font-bold tracking-tight text-5xl sm:text-6xl lg:text-7xl leading-none mt-5">Blindfold Trainer</h1>
@@ -267,10 +267,10 @@ const App: React.FC = () => {
         <div className="w-full max-w-3xl mt-8 lg:mt-10 grid grid-cols-3 gap-2 sm:gap-4">
           {steps.map((s) => (
             <div key={s.n} className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-center sm:text-left">
-              <span className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: 'rgba(23,105,91,0.12)', color: '#17695b' }}>{s.n}</span>
+              <span className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-[#111] text-white">{s.n}</span>
               <div>
                 <p className="text-sm font-bold">{s.title}</p>
-                <p className="text-xs opacity-60 mt-0.5 hidden sm:block">{s.text}</p>
+                <p className="text-xs text-neutral-600 mt-0.5 hidden sm:block">{s.text}</p>
               </div>
             </div>
           ))}
@@ -284,11 +284,11 @@ const App: React.FC = () => {
               <button
                 key={l.diff}
                 onClick={() => startGame(l.diff)}
-                className="group relative text-left bg-[#fffaf5] rounded-2xl border border-black/5 shadow-sm p-4 sm:p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-[#17695b]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17695b] flex sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0"
+                className="group relative text-left card card-hover rounded-2xl p-4 sm:p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17695b] flex sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0"
               >
                 <div className="flex items-center justify-between sm:mb-5">
                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center p-1.5 transition-transform group-hover:scale-105" style={{ backgroundColor: 'rgba(17,17,17,0.05)' }}>
-                    {PIECE_ICONS['WHITE'][l.icon]}
+                    {PIECE_ICONS['BLACK'][l.icon]}
                   </div>
                   <div className="hidden sm:flex gap-1" aria-hidden="true">
                     {[1, 2, 3].map((d) => (
@@ -326,17 +326,17 @@ const App: React.FC = () => {
     const timeColor = state.timeLeft < 15 ? '#d9473f' : state.timeLeft < 30 ? '#c9822b' : '#17695b';
     const livesLeft = Math.max(0, MAX_STRIKES - state.strikes);
     const RING_C = 2 * Math.PI * 36;
-    const iconBtn = "w-10 h-10 flex items-center justify-center rounded-full transition-all hover:bg-black/5 active:scale-90 disabled:opacity-25 disabled:hover:bg-transparent";
+    const iconBtn = "h-11 w-full flex items-center justify-center rounded-xl transition-all hover:bg-black/[0.06] active:scale-95 disabled:opacity-25 disabled:hover:bg-transparent";
 
     return (
       <div className="w-full min-h-screen flex items-center justify-center px-3 py-3 lg:px-8 lg:py-6 animate-in fade-in duration-700 box-border">
         <div className="game-grid">
           {/* ── Stats + controls: chess clock ring ── */}
           <section className="area-stats select-none flex flex-col gap-2">
-            <div className="bg-[#fffaf5] rounded-2xl border border-black/5 shadow-sm px-5 py-4 flex items-center justify-between" style={{ color: PALETTE.PRIMARY_TEXT }}>
+            <div className="card rounded-2xl px-5 py-4 flex items-center justify-between" style={{ color: PALETTE.PRIMARY_TEXT }}>
               {/* Score */}
               <div className="flex flex-col min-w-[64px]">
-                <span className="text-[10px] font-bold tracking-[0.18em] uppercase opacity-50">Score</span>
+                <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-neutral-600">Score</span>
                 <span className="text-[28px] font-extrabold tabular-nums leading-tight">{state.score}</span>
               </div>
 
@@ -361,7 +361,7 @@ const App: React.FC = () => {
 
               {/* Lives */}
               <div className="flex flex-col items-end min-w-[64px]">
-                <span className="text-[10px] font-bold tracking-[0.18em] uppercase opacity-50">Lives</span>
+                <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-neutral-600">Lives</span>
                 <div className="flex gap-0.5 mt-1.5" aria-label={`${livesLeft} of ${MAX_STRIKES} lives left`}>
                   {Array.from({ length: MAX_STRIKES }).map((_, i) => {
                     const alive = i < livesLeft;
@@ -373,23 +373,23 @@ const App: React.FC = () => {
                     );
                   })}
                 </div>
-                <span className="text-[11px] font-semibold opacity-50 mt-1 tabular-nums">{livesLeft} left</span>
+                <span className="text-[11px] font-semibold text-neutral-600 mt-1 tabular-nums">{livesLeft} left</span>
               </div>
             </div>
 
             {/* Controls */}
-            <div className="flex items-center justify-center gap-2" style={{ color: PALETTE.PRIMARY_TEXT }}>
+            <div className="card rounded-2xl p-1 grid grid-cols-3 lg:grid-cols-4 gap-1" style={{ color: PALETTE.PRIMARY_TEXT }}>
               <button onClick={goHome} className={iconBtn} aria-label="Home" title="Home">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
               </button>
               <button onClick={togglePause} disabled={state.phase !== 'PLAYING'} className={iconBtn} aria-label={isPaused ? 'Resume' : 'Pause'} title={isPaused ? 'Resume' : 'Pause'}>
-                {isPaused ? <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> : <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>}
+                {isPaused ? <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> : <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>}
               </button>
               <button onClick={toggleMute} className={iconBtn} aria-label={isMuted ? 'Unmute' : 'Mute'} title={isMuted ? 'Unmute' : 'Mute'}>
-                {isMuted ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>}
+                {isMuted ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>}
               </button>
               <button onClick={toggleFullscreen} className={`${iconBtn} hidden lg:flex`} aria-label="Toggle fullscreen" title="Fullscreen">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
               </button>
             </div>
           </section>
@@ -472,11 +472,10 @@ const App: React.FC = () => {
                   key={type}
                   onClick={() => handlePieceSelect(type)}
                   disabled={isDisabled}
-                  className={`piece-btn relative flex flex-col items-center justify-center gap-1 py-3 rounded-xl bg-white transition-all enabled:hover:-translate-y-0.5 enabled:hover:shadow-md group ${isPulsing ? 'animate-subtle-pulse' : ''}`}
+                  className={`piece-btn card card-hover relative flex flex-col items-center justify-center gap-1.5 py-3 rounded-2xl group ${isPulsing ? 'animate-subtle-pulse' : ''}`}
                   style={{
-                    border: `1.5px solid ${isPulsing ? '#d9473f' : feedback?.status === 'correct' ? '#17695b' : 'rgba(17,17,17,0.1)'}`,
-                    opacity: ruledOut ? 0.35 : 1,
-                    boxShadow: '0 2px 6px -2px rgba(17,17,17,0.12)',
+                    ...(isPulsing ? { borderColor: '#d9473f' } : feedback?.status === 'correct' ? { borderColor: '#17695b' } : {}),
+                    opacity: ruledOut ? 0.3 : 1,
                   }}
                 >
                   {feedback && (
@@ -486,8 +485,8 @@ const App: React.FC = () => {
                       </span>
                     </div>
                   )}
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 transition-transform group-enabled:group-hover:scale-110">{PIECE_ICONS['WHITE'][type]}</div>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] opacity-55" style={{ color: PALETTE.PRIMARY_TEXT }}>{type.toLowerCase()}</span>
+                  <div className="w-11 h-11 lg:w-14 lg:h-14 transition-transform group-enabled:group-hover:scale-110">{PIECE_ICONS['BLACK'][type]}</div>
+                  <span className="text-xs lg:text-sm font-bold capitalize" style={{ color: PALETTE.PRIMARY_TEXT }}>{type.toLowerCase()}</span>
                 </button>
               );
             })}
@@ -527,10 +526,10 @@ const App: React.FC = () => {
           </span>
 
           {/* Score + grade */}
-          <div className="w-full mt-5 bg-[#fffaf5] rounded-3xl border border-black/5 shadow-sm p-6 sm:p-8">
+          <div className="w-full mt-5 card rounded-3xl p-6 sm:p-8">
             <div className="flex items-center justify-between gap-6">
               <div className="text-left">
-                <span className="text-[10px] font-bold tracking-[0.18em] uppercase opacity-50">Final score</span>
+                <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-neutral-600">Final score</span>
                 <div className="text-6xl sm:text-7xl font-extrabold tabular-nums leading-none mt-1">{state.score}</div>
               </div>
               <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
@@ -555,7 +554,7 @@ const App: React.FC = () => {
           {/* Stats */}
           <div className="w-full grid grid-cols-4 gap-2 mt-3">
             {stats.map((s) => (
-              <div key={s.label} className="bg-[#fffaf5]/70 rounded-2xl border border-black/5 py-3 px-1">
+              <div key={s.label} className="card rounded-2xl py-3 px-1">
                 <div className="text-lg sm:text-xl font-extrabold tabular-nums">{s.value}</div>
                 <div className="text-[10px] font-semibold opacity-50 mt-0.5">{s.label}</div>
               </div>
