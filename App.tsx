@@ -303,7 +303,7 @@ const App: React.FC = () => {
             <span aria-hidden className="font-bold text-[#2f7d4f] mr-2">♞</span>
             <span className="brand">Blindfold Trainer</span>
           </h1>
-          <p className="text-sm lg:text-base font-medium text-[#6f6a62] mt-2">by <span className="font-semibold text-[#1f1d1a]">Venture Chess Academy</span></p>
+          <p className="text-sm lg:text-base font-medium text-[#6f6a62] mt-2">by <a href="https://venturechessacademy.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#1f1d1a] underline-offset-4 decoration-[#2f7d4f] decoration-2 hover:underline hover:text-[#2f7d4f] transition-colors">Venture Chess Academy</a></p>
         </div>
 
         {/* How it works */}
