@@ -259,7 +259,7 @@ const App: React.FC = () => {
           <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-[#fffaf5] border border-black/5 shadow-sm flex items-center justify-center p-2">
             {PIECE_ICONS['WHITE']['KNIGHT']}
           </div>
-          <h1 className="serif italic text-5xl sm:text-6xl lg:text-7xl leading-none mt-5">Blindfold Trainer</h1>
+          <h1 className="serif font-bold tracking-tight text-5xl sm:text-6xl lg:text-7xl leading-none mt-5">Blindfold Trainer</h1>
           <p className="text-base lg:text-lg opacity-70 mt-3 max-w-lg text-balance">Train your board vision, one blindfold move at a time.</p>
         </div>
 
@@ -287,12 +287,12 @@ const App: React.FC = () => {
                 className="group relative text-left bg-[#fffaf5] rounded-2xl border border-black/5 shadow-sm p-4 sm:p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-[#17695b]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17695b] flex sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0"
               >
                 <div className="flex items-center justify-between sm:mb-5">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center p-1.5 transition-transform group-hover:scale-105" style={{ backgroundColor: 'rgba(85,30,25,0.05)' }}>
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center p-1.5 transition-transform group-hover:scale-105" style={{ backgroundColor: 'rgba(17,17,17,0.05)' }}>
                     {PIECE_ICONS['WHITE'][l.icon]}
                   </div>
                   <div className="hidden sm:flex gap-1" aria-hidden="true">
                     {[1, 2, 3].map((d) => (
-                      <span key={d} className="w-1.5 h-4 rounded-full" style={{ backgroundColor: d <= l.dots ? '#17695b' : 'rgba(85,30,25,0.12)' }} />
+                      <span key={d} className="w-1.5 h-4 rounded-full" style={{ backgroundColor: d <= l.dots ? '#17695b' : 'rgba(17,17,17,0.12)' }} />
                     ))}
                   </div>
                 </div>
@@ -305,7 +305,7 @@ const App: React.FC = () => {
                 </div>
                 <div className="sm:mt-5 flex items-center justify-between">
                   <span className="hidden sm:inline text-xs opacity-50">2 min · 5 lives</span>
-                  <span className="w-9 h-9 rounded-full flex items-center justify-center transition-colors group-hover:bg-[#17695b] group-hover:text-white" style={{ backgroundColor: 'rgba(85,30,25,0.06)' }} aria-hidden="true">
+                  <span className="w-9 h-9 rounded-full flex items-center justify-center transition-colors group-hover:bg-[#17695b] group-hover:text-white" style={{ backgroundColor: 'rgba(17,17,17,0.06)' }} aria-hidden="true">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                   </span>
                 </div>
@@ -343,7 +343,7 @@ const App: React.FC = () => {
               {/* Clock ring */}
               <div className="relative w-[76px] h-[76px] lg:w-[92px] lg:h-[92px]" role="timer" aria-label={`${state.timeLeft} seconds left`}>
                 <svg viewBox="0 0 84 84" className="w-full h-full -rotate-90">
-                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(85,30,25,0.1)" strokeWidth="6" />
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(17,17,17,0.1)" strokeWidth="6" />
                   <circle
                     cx="42" cy="42" r="36" fill="none"
                     stroke={timeColor}
@@ -368,7 +368,7 @@ const App: React.FC = () => {
                     return (
                       <svg key={i} width="15" height="15" viewBox="0 0 24 24" className="transition-all duration-300" style={{ transform: alive ? 'scale(1)' : 'scale(0.85)' }}>
                         <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4.4.6 1.6.6 2 0 .7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"
-                          fill={alive ? '#d9473f' : 'none'} stroke={alive ? '#d9473f' : 'rgba(85,30,25,0.22)'} strokeWidth="2" />
+                          fill={alive ? '#d9473f' : 'none'} stroke={alive ? '#d9473f' : 'rgba(17,17,17,0.22)'} strokeWidth="2" />
                       </svg>
                     );
                   })}
@@ -399,13 +399,13 @@ const App: React.FC = () => {
             {state.phase === 'OBSERVING' && (
               <>
                 <span className="text-[10px] font-bold uppercase tracking-[0.25em] opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>Step 1 · Memorize</span>
-                <p className="serif italic text-2xl lg:text-3xl mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Study the position.</p>
+                <p className="serif font-semibold text-2xl lg:text-3xl mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Study the position.</p>
                 <p className="text-sm opacity-60 mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>The pieces disappear when you start.</p>
                 <button
                   onClick={beginDrill}
                   disabled={countdown !== null}
                   className="button-premium mt-4 w-full max-w-xs lg:max-w-none py-3.5 rounded-xl transition-all disabled:opacity-50"
-                  style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 12px 24px -12px ${PALETTE.BOARD_DARK}` }}
+                  style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 12px 24px -12px rgba(0,0,0,0.45)` }}
                 >
                   <span className="text-xs font-bold uppercase tracking-[0.2em]">{countdown !== null ? 'Get ready…' : "I'm ready"}</span>
                 </button>
@@ -435,7 +435,7 @@ const App: React.FC = () => {
 
               {countdown !== null && (
                 <div className="absolute inset-0 flex items-center justify-center z-[60] pointer-events-none rounded-[14px]" style={{ background: 'rgba(40, 15, 10, 0.35)' }}>
-                  <div key={countdown} className="text-8xl lg:text-9xl font-black italic serif animate-in zoom-in fade-in duration-500 drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]" style={{ color: PALETTE.SECONDARY_BG }}>
+                  <div key={countdown} className="text-8xl lg:text-9xl font-bold serif animate-in zoom-in fade-in duration-500 drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]" style={{ color: PALETTE.SECONDARY_BG }}>
                     {countdown > 0 ? countdown : 'GO!'}
                   </div>
                 </div>
@@ -443,7 +443,7 @@ const App: React.FC = () => {
 
               {isPaused && (
                 <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-5 animate-in fade-in duration-300 rounded-[14px] backdrop-blur-md" style={{ background: 'rgba(255, 250, 244, 0.88)' }}>
-                  <h2 className="serif italic text-3xl lg:text-4xl" style={{ color: PALETTE.PRIMARY_TEXT }}>Paused</h2>
+                  <h2 className="serif font-semibold text-3xl lg:text-4xl" style={{ color: PALETTE.PRIMARY_TEXT }}>Paused</h2>
                   <div className="flex flex-col gap-2.5 w-56">
                     <button onClick={togglePause} className="button-premium py-3 rounded-xl font-bold uppercase tracking-[0.18em] text-[11px]" style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG }}>Resume</button>
                     <button onClick={restartCurrentDrill} className="button-premium py-3 rounded-xl font-bold uppercase tracking-[0.18em] text-[11px]" style={{ backgroundColor: PALETTE.SECONDARY_BG, border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}>Restart</button>
@@ -474,9 +474,9 @@ const App: React.FC = () => {
                   disabled={isDisabled}
                   className={`piece-btn relative flex flex-col items-center justify-center gap-1 py-3 rounded-xl bg-white transition-all enabled:hover:-translate-y-0.5 enabled:hover:shadow-md group ${isPulsing ? 'animate-subtle-pulse' : ''}`}
                   style={{
-                    border: `1.5px solid ${isPulsing ? '#d9473f' : feedback?.status === 'correct' ? '#17695b' : 'rgba(85,30,25,0.1)'}`,
+                    border: `1.5px solid ${isPulsing ? '#d9473f' : feedback?.status === 'correct' ? '#17695b' : 'rgba(17,17,17,0.1)'}`,
                     opacity: ruledOut ? 0.35 : 1,
-                    boxShadow: '0 2px 6px -2px rgba(85,30,25,0.12)',
+                    boxShadow: '0 2px 6px -2px rgba(17,17,17,0.12)',
                   }}
                 >
                   {feedback && (
@@ -535,7 +535,7 @@ const App: React.FC = () => {
               </div>
               <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
                 <svg viewBox="0 0 84 84" className="w-full h-full -rotate-90">
-                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(85,30,25,0.1)" strokeWidth="6" />
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(17,17,17,0.1)" strokeWidth="6" />
                   <circle cx="42" cy="42" r="36" fill="none" stroke="#17695b" strokeWidth="6" strokeLinecap="round"
                     strokeDasharray={2 * Math.PI * 36} strokeDashoffset={2 * Math.PI * 36 * (1 - accuracy / 100)} />
                 </svg>
@@ -547,7 +547,7 @@ const App: React.FC = () => {
             </div>
 
             <div className="text-left mt-6 pt-5 border-t border-black/5">
-              <p className="serif italic text-xl sm:text-2xl">{grade.label}</p>
+              <p className="serif font-semibold text-xl sm:text-2xl">{grade.label}</p>
               <p className="text-sm opacity-65 mt-1.5 leading-relaxed">{grade.desc}</p>
             </div>
           </div>
@@ -567,7 +567,7 @@ const App: React.FC = () => {
             <button
               onClick={restartCurrentDrill}
               className="button-premium flex-1 py-3.5 rounded-xl text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center justify-center gap-2"
-              style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 12px 24px -12px ${PALETTE.BOARD_DARK}` }}
+              style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 12px 24px -12px rgba(0,0,0,0.45)` }}
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
               Play again
