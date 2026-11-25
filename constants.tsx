@@ -9,7 +9,7 @@ export const PALETTE = {
   BOARD_DARK: '#551e19', // Dark Brown
   HIGHLIGHT_OUTLINE: '#551e19', 
   PATH_INDICATOR: '#551e19',
-  PRIMARY_TEXT: '#551e19',
+  PRIMARY_TEXT: '#111111',
   MUTED_ELEMENTS: '#e6b17e',
 };
 
