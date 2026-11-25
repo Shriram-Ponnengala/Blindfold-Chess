@@ -128,6 +128,19 @@
         .animate-move-tint {
             animation: move-tint 2.4s ease-in 0.6s forwards;
         }
+        /* Solid card used across all screens */
+        .card {
+            background: #ffffff;
+            border: 1.5px solid rgba(17, 17, 17, 0.10);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 10px 24px -14px rgba(0, 0, 0, 0.30);
+        }
+        .card-hover { transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+        .card-hover:hover:not(:disabled) {
+            border-color: #111111;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 16px 30px -14px rgba(0, 0, 0, 0.40);
+            transform: translateY(-2px);
+        }
+        .card-hover:active:not(:disabled) { transform: translateY(0); }
         .glass-panel {
             /* Secondary Background with transparency */
             background: rgba(255, 255, 255, 0.75);
