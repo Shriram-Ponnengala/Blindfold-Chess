@@ -3,26 +3,27 @@ import React from 'react';
 import { PieceType, PieceColor } from './types';
 
 export const PALETTE = {
-  PRIMARY_BG: '#f7d5b4', // Cream
-  SECONDARY_BG: '#ffffff', // White
+  PRIMARY_BG: '#f6f3ee',
+  SECONDARY_BG: '#ffffff',
   BOARD_LIGHT: '#e6b17e', // Gold / Sand
   BOARD_DARK: '#551e19', // Dark Brown
   HIGHLIGHT_OUTLINE: '#551e19', 
   PATH_INDICATOR: '#551e19',
-  PRIMARY_TEXT: '#111111',
+  PRIMARY_TEXT: '#1f1d1a',
   MUTED_ELEMENTS: '#e6b17e',
 };
 
 // Softer, lower-contrast wood board that's easier on the eyes during long drills.
 export const BOARD_THEME = {
-  LIGHT: '#efdcc0',
-  DARK: '#b27c55',
-  FRAME: '#4a1d17',
-  FRAME_LIGHT: '#6e2f24',
-  TARGET: '#17695b',
-  TARGET_FILL: 'rgba(120, 200, 180, 0.35)',
-  LAST_MOVE: 'rgba(222, 186, 72, 0.42)',
-  ARROW: 'rgba(214, 112, 36, 0.85)',
+  LIGHT: '#f0d9b5',
+  DARK: '#b58863',
+  COORD_LIGHT: '#b58863',
+  COORD_DARK: '#f0d9b5',
+  FRAME: '#7d371d',
+  TARGET: '#2f7d4f',
+  TARGET_FILL: 'rgba(47, 125, 79, 0.32)',
+  LAST_MOVE: 'rgba(155, 199, 0, 0.41)',
+  ARROW: 'rgba(47, 125, 79, 0.85)',
 };
 
 const WhiteQueen =() => (
