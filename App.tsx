@@ -203,7 +203,11 @@ const App: React.FC = () => {
 
       if (streakHit) { soundService.playStreak(); haptics.streak(); }
       else { soundService.playCorrect(bonus.pts > 0); haptics.correct(); }
-      showPop(state.targetSquare, `+${points}`, 'good', streakHit ? `${state.currentStreak + 1} in a row!` : bonus.label || undefined);
+      // 1) Arrow first: draw the move right away
+      const answeredSquare = state.targetSquare;
+      setState(prev => ({ ...prev, lastMoveLine: [validPiece.square, answeredSquare] }));
+      // 2) Then the points pop, once the arrow has landed
+      setTimeout(() => showPop(answeredSquare, `+${points}`, 'good', streakHit ? `${state.currentStreak + 1} in a row!` : bonus.label || undefined), 350);
       setMoveFeedback({ type, status: 'correct' });
       setDisabledOptions([]);
 
@@ -242,7 +246,7 @@ const App: React.FC = () => {
           return { ...scored, phase: 'OBSERVING', pieces: fresh.pieces, lastMoveLine: null, targetSquare: null, moveHistory: [] };
         });
         setIsProcessing(false); // UNLOCK INPUT
-      }, 500);
+      }, 750);
     } else {
       setIsProcessing(true); // LOCK INPUT
       soundService.playIncorrect();
