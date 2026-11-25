@@ -13,7 +13,19 @@ export const PALETTE = {
   MUTED_ELEMENTS: '#e6b17e',
 };
 
-const WhiteQueen = () => (
+// Softer, lower-contrast wood board that's easier on the eyes during long drills.
+export const BOARD_THEME = {
+  LIGHT: '#efdcc0',
+  DARK: '#b27c55',
+  FRAME: '#4a1d17',
+  FRAME_LIGHT: '#6e2f24',
+  TARGET: '#17695b',
+  TARGET_FILL: 'rgba(120, 200, 180, 0.35)',
+  LAST_MOVE: 'rgba(222, 186, 72, 0.42)',
+  ARROW: 'rgba(214, 112, 36, 0.85)',
+};
+
+const WhiteQueen =() => (
   <svg viewBox="0 0 45 45" className="w-full h-full">
     <g fill="#FFF" stroke="#000" strokeWidth="1.5" strokeLinejoin="round">
       <path d="M 9,26 C 17.5,24.5 30,24.5 36,26 L 38.5,13.5 L 31,25 L 30.7,10.9 L 25.5,24.5 L 22.5,10 L 19.5,24.5 L 14.3,10.9 L 14,25 L 6.5,13.5 L 9,26 Z"/>

@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Piece } from '../types';
-import { PALETTE, PIECE_ICONS } from '../constants';
+import { BOARD_THEME, PIECE_ICONS } from '../constants';
 
 interface ChessBoardProps {
   pieces: Piece[];
@@ -9,147 +8,145 @@ interface ChessBoardProps {
   lastMoveLine: [number, number] | null;
 }
 
+const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1'];
+
+const isLight = (idx: number) => (Math.floor(idx / 8) + (idx % 8)) % 2 === 0;
+
+const center = (idx: number) => ({
+  x: (idx % 8) * 12.5 + 6.25,
+  y: Math.floor(idx / 8) * 12.5 + 6.25,
+});
+
 const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveLine }) => {
-  const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
-  const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-
-  const getSquareColor = (idx: number) => {
-    const row = Math.floor(idx / 8);
-    const col = idx % 8;
-    return (row + col) % 2 === 0 ? PALETTE.BOARD_LIGHT : PALETTE.BOARD_DARK;
-  };
-
-  const getCoordinatesForLine = (idx: number) => {
-    const row = Math.floor(idx / 8);
-    const col = idx % 8;
-    return {
-      x: col * 12.5 + 6.25,
-      y: row * 12.5 + 6.25,
-    };
-  };
-
-  // Dimensions used for synchronization
-  const boardSizeClasses = "w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] md:w-[500px] md:h-[500px] lg:w-[540px] lg:h-[540px]";
-  const gutterHeightClasses = "h-[320px] sm:h-[400px] md:h-[500px] lg:h-[540px]";
+  const arrow = (() => {
+    if (!lastMoveLine) return null;
+    const a = center(lastMoveLine[0]);
+    const b = center(lastMoveLine[1]);
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const len = Math.hypot(dx, dy) || 1;
+    // Stop the shaft short so the head lands inside the target square.
+    const trim = 4.5;
+    return { x1: a.x, y1: a.y, x2: b.x - (dx / len) * trim, y2: b.y - (dy / len) * trim };
+  })();
 
   return (
-    <div 
-      className="relative flex flex-col rounded-sm"
-      style={{ 
-        backgroundColor: PALETTE.BOARD_DARK,
-        boxShadow: '0 25px 50px -12px rgba(85, 30, 25, 0.4), 0 10px 15px -8px rgba(0, 0, 0, 0.2)'
+    <div
+      className="relative p-[6px] sm:p-[8px] rounded-[14px]"
+      style={{
+        background: `linear-gradient(145deg, ${BOARD_THEME.FRAME_LIGHT}, ${BOARD_THEME.FRAME})`,
+        boxShadow:
+          '0 30px 60px -20px rgba(60, 25, 15, 0.45), 0 12px 24px -12px rgba(60, 25, 15, 0.35), inset 0 1px 0 rgba(255,255,255,0.12)',
       }}
     >
-      {/* Top Files Gutter */}
-      <div className="flex w-full h-6 sm:h-8 pl-6 sm:pl-8 pr-6 sm:pr-8" style={{ backgroundColor: PALETTE.BOARD_DARK }}>
-        {files.map(f => (
-          <div key={`top-${f}`} className="flex-1 flex items-center justify-center">
-            <span className="text-[10px] font-bold text-white/30 antialiased select-none uppercase">{f}</span>
-          </div>
-        ))}
-      </div>
+      <div
+        className="board-size relative grid grid-cols-8 grid-rows-8 overflow-hidden rounded-[8px] select-none"
+        style={{ boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.18)' }}
+      >
+        {Array.from({ length: 64 }).map((_, i) => {
+          const light = isLight(i);
+          const row = Math.floor(i / 8);
+          const col = i % 8;
+          const piece = pieces.find((p) => p.square === i);
+          const isTarget = targetSquare === i;
+          const isFrom = lastMoveLine?.[0] === i;
+          const isTo = lastMoveLine?.[1] === i;
+          const coordColor = light ? BOARD_THEME.DARK : BOARD_THEME.LIGHT;
 
-      <div className="flex">
-        {/* Left Ranks Gutter */}
-        <div className={`flex flex-col w-6 sm:w-8 ${gutterHeightClasses}`} style={{ backgroundColor: PALETTE.BOARD_DARK }}>
-          {ranks.map(r => (
-            <div key={`left-${r}`} className="flex-1 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-white/50 antialiased select-none">{r}</span>
-            </div>
-          ))}
-        </div>
+          return (
+            <div
+              key={i}
+              className="relative flex items-center justify-center"
+              style={{ backgroundColor: light ? BOARD_THEME.LIGHT : BOARD_THEME.DARK }}
+            >
+              {/* Last move tint */}
+              {(isFrom || isTo) && (
+                <div
+                  className="absolute inset-0 animate-move-tint"
+                  style={{ backgroundColor: BOARD_THEME.LAST_MOVE }}
+                />
+              )}
 
-        {/* Chessboard Area */}
-        <div 
-          className={`relative border border-black/20 overflow-hidden select-none ${boardSizeClasses}`}
-        >
-          {/* 8x8 Chessboard */}
-          <div className="grid grid-cols-8 grid-rows-8 w-full h-full">
-            {Array.from({ length: 64 }).map((_, i) => (
-              <div
-                key={i}
-                style={{ backgroundColor: getSquareColor(i) }}
-                className="relative flex items-center justify-center transition-colors duration-200"
-              >
-                {/* Highlighted Target Square - Enhanced Blue Visibility */}
-                {targetSquare === i && (
-                  <div 
-                    className="absolute inset-0 z-10 animate-pulse-slow" 
-                    style={{ 
-                      backgroundColor: 'rgba(59, 130, 246, 0.4)', // Vibrant Blue Fill
-                      border: '6px solid rgba(37, 99, 235, 1)',  // Stronger Blue Border
-                      boxShadow: 'inset 0 0 15px rgba(255, 255, 255, 0.4), 0 0 20px rgba(59, 130, 246, 0.6)',
-                      pointerEvents: 'none'
-                    }}
+              {/* Target square */}
+              {isTarget && (
+                <div className="absolute inset-0 z-10 pointer-events-none">
+                  <div className="absolute inset-0" style={{ backgroundColor: BOARD_THEME.TARGET_FILL }} />
+                  <div
+                    className="absolute inset-[3px] sm:inset-[4px] rounded-[4px] animate-target-ring"
+                    style={{ boxShadow: `inset 0 0 0 4px ${BOARD_THEME.TARGET}, 0 0 0 1px rgba(255,255,255,0.5)` }}
                   />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Pieces Layer */}
-          <div className="absolute inset-0 grid grid-cols-8 grid-rows-8 pointer-events-none">
-            {Array.from({ length: 64 }).map((_, i) => {
-              const piece = pieces.find((p) => p.square === i);
-              return (
-                <div key={i} className="flex items-center justify-center p-0.5">
-                  {piece && (
-                    <div 
-                      className="w-[90%] h-[90%] flex items-center justify-center transition-all duration-700 ease-out"
-                      style={{ 
-                        opacity: piece.isVisible ? 1 : 0,
-                        transform: piece.isVisible ? 'scale(1)' : 'scale(0.7)',
-                      }}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span
+                      className="font-bold text-[11px] sm:text-sm md:text-base px-1.5 py-0.5 rounded-md leading-none"
+                      style={{ color: '#fff', backgroundColor: BOARD_THEME.TARGET }}
                     >
-                      {PIECE_ICONS[piece.color][piece.type]}
-                    </div>
-                  )}
+                      {FILES[col]}
+                      {RANKS[row]}
+                    </span>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+              )}
 
-          {/* Move Line Layer with Fading Arrow */}
-          {lastMoveLine && (
-            <svg key={`${lastMoveLine[0]}-${lastMoveLine[1]}`} className="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 100 100">
-              <defs>
-                <marker id="arrowhead" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
-                  <polygon points="0 0, 4 2, 0 4" fill="white" opacity="0.8" />
-                </marker>
-              </defs>
-              <line
-                x1={getCoordinatesForLine(lastMoveLine[0]).x}
-                y1={getCoordinatesForLine(lastMoveLine[0]).y}
-                x2={getCoordinatesForLine(lastMoveLine[1]).x}
-                y2={getCoordinatesForLine(lastMoveLine[1]).y}
-                stroke="white"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                markerEnd="url(#arrowhead)"
-                className="animate-line-fade"
-                style={{ strokeDasharray: '0.5, 2' }}
-              />
-            </svg>
-          )}
-        </div>
+              {/* Coordinates, lichess-style inside edge squares */}
+              {col === 0 && (
+                <span
+                  className="absolute top-[2px] left-[3px] text-[10px] sm:text-[12px] font-bold leading-none pointer-events-none"
+                  style={{ color: coordColor, opacity: 0.95 }}
+                >
+                  {RANKS[row]}
+                </span>
+              )}
+              {row === 7 && (
+                <span
+                  className="absolute bottom-[2px] right-[4px] text-[10px] sm:text-[12px] font-bold leading-none pointer-events-none"
+                  style={{ color: coordColor, opacity: 0.95 }}
+                >
+                  {FILES[col]}
+                </span>
+              )}
 
-        {/* Right Ranks Gutter */}
-        <div className={`flex flex-col w-6 sm:w-8 ${gutterHeightClasses}`} style={{ backgroundColor: PALETTE.BOARD_DARK }}>
-          {ranks.map(r => (
-            <div key={`right-${r}`} className="flex-1 flex items-center justify-center">
-              <span className="text-[10px] font-bold text-white/30 antialiased select-none">{r}</span>
+              {/* Piece */}
+              {piece && (
+                <div
+                  className="relative z-20 w-[86%] h-[86%] transition-all duration-700 ease-out pointer-events-none"
+                  style={{
+                    opacity: piece.isVisible ? 1 : 0,
+                    transform: piece.isVisible ? 'scale(1)' : 'scale(0.75)',
+                    filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.28))',
+                  }}
+                >
+                  {PIECE_ICONS[piece.color][piece.type]}
+                </div>
+              )}
             </div>
-          ))}
-        </div>
-      </div>
+          );
+        })}
 
-      {/* Bottom Files Gutter */}
-      <div className="flex w-full h-6 sm:h-8 pl-6 sm:pl-8 pr-6 sm:pr-8" style={{ backgroundColor: PALETTE.BOARD_DARK }}>
-        {files.map(f => (
-          <div key={`bottom-${f}`} className="flex-1 flex items-center justify-center">
-            <span className="text-[10px] font-bold text-white/50 antialiased select-none uppercase">{f}</span>
-          </div>
-        ))}
+        {/* Last move arrow */}
+        {arrow && (
+          <svg
+            key={`${lastMoveLine![0]}-${lastMoveLine![1]}`}
+            className="absolute inset-0 w-full h-full pointer-events-none z-30 animate-arrow-fade"
+            viewBox="0 0 100 100"
+          >
+            <defs>
+              <marker id="mb-arrowhead" markerWidth="3" markerHeight="3" refX="0.6" refY="1.5" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L3,1.5 L0,3 z" fill={BOARD_THEME.ARROW} />
+              </marker>
+            </defs>
+            <line
+              x1={arrow.x1}
+              y1={arrow.y1}
+              x2={arrow.x2}
+              y2={arrow.y2}
+              stroke={BOARD_THEME.ARROW}
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              markerEnd="url(#mb-arrowhead)"
+            />
+          </svg>
+        )}
       </div>
     </div>
   );
