@@ -240,316 +240,348 @@ const App: React.FC = () => {
     return { rank: 'D', label: 'Vision Under Review', desc: 'Concentrate on static board memory before attempting rapid sequence tracking.' };
   };
 
-  const renderStartScreen = () => (
-    <div className="flex flex-col items-center justify-center min-h-[90vh] py-12 animate-in fade-in duration-1000 relative overflow-hidden">
-      {/* Subtle background piece textures */}
-      <div className="absolute top-10 -left-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] -rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
-        {PIECE_ICONS['WHITE']['KNIGHT']}
-      </div>
-      <div className="absolute bottom-10 -right-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
-        {PIECE_ICONS['WHITE']['ROOK']}
-      </div>
+  const renderStartScreen = () => {
+    const levels = [
+      { diff: Difficulty.EASY, name: 'Easy', icon: 'PAWN' as PieceType, tag: 'Beginner', pieces: 3, detail: '1 confuser nearby', dots: 1 },
+      { diff: Difficulty.INTERMEDIATE, name: 'Medium', icon: 'KNIGHT' as PieceType, tag: 'Developing', pieces: 4, detail: '2 confusers nearby', dots: 2 },
+      { diff: Difficulty.HARD, name: 'Hard', icon: 'QUEEN' as PieceType, tag: 'Advanced', pieces: 5, detail: '2 knights or 2 bishops', dots: 3 },
+    ];
+    const steps = [
+      { n: 1, title: 'Memorize', text: 'Study where each piece stands.' },
+      { n: 2, title: 'Go blind', text: 'The pieces disappear from the board.' },
+      { n: 3, title: 'Find the piece', text: 'Tap the one that can reach the target.' },
+    ];
 
-      {/* Ghost pieces at the top */}
-      <div className="flex items-end justify-center space-x-8 mb-8 opacity-10 pointer-events-none">
-        <div className="w-12 h-12">{PIECE_ICONS['WHITE']['QUEEN']}</div>
-        <div className="w-10 h-10">{PIECE_ICONS['WHITE']['ROOK']}</div>
-        <div className="w-12 h-12">{PIECE_ICONS['WHITE']['BISHOP']}</div>
-      </div>
-      
-      <div className="text-center relative px-4 z-10 mb-12">
-        <div className="flex flex-col items-center">
-          <div className="w-8 h-8 opacity-20 mb-2">{PIECE_ICONS['WHITE']['KNIGHT']}</div>
-          <span className="block text-sm sm:text-base font-medium tracking-[0.2em] uppercase opacity-60 mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Blindfold Chess Trainer</span>
-          <h1 className="serif text-6xl sm:text-7xl md:text-8xl italic leading-tight" style={{ color: PALETTE.PRIMARY_TEXT }}>MindBoard</h1>
-          <p className="font-bold tracking-[0.3em] text-[10px] sm:text-[12px] uppercase opacity-60 mt-4 max-w-xs sm:max-w-none" style={{ color: PALETTE.PRIMARY_TEXT }}>Train your blindfold chess the right way</p>
+    return (
+      <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 py-10 lg:py-12 animate-in fade-in duration-700 box-border" style={{ color: PALETTE.PRIMARY_TEXT }}>
+        {/* Brand */}
+        <div className="flex flex-col items-center text-center">
+          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-[#fffaf5] border border-black/5 shadow-sm flex items-center justify-center p-2">
+            {PIECE_ICONS['WHITE']['KNIGHT']}
+          </div>
+          <h1 className="serif italic text-5xl sm:text-6xl lg:text-7xl leading-none mt-5">MindBoard</h1>
+          <p className="text-base lg:text-lg opacity-70 mt-3 max-w-lg text-balance">Train your board vision, one blindfold move at a time.</p>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 w-full max-w-5xl z-10">
-        {/* EASY CARD */}
-        <button 
-          onClick={() => startGame(Difficulty.EASY)}
-          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl hover:border-[#8a5c2e] group"
-        >
-          <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['PAWN']}</div>
-          <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Easy</h3>
-          <div className="w-12 h-[1px] bg-black/10 mb-6" />
-          <div className="space-y-2 mb-8">
-            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>3 pieces</p>
-            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>1 confuser nearby</p>
-          </div>
-          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#e0f2f1] text-[#00695c]">Beginner</span>
-        </button>
+        {/* How it works */}
+        <div className="w-full max-w-3xl mt-8 lg:mt-10 grid grid-cols-3 gap-2 sm:gap-4">
+          {steps.map((s) => (
+            <div key={s.n} className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-center sm:text-left">
+              <span className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: 'rgba(23,105,91,0.12)', color: '#17695b' }}>{s.n}</span>
+              <div>
+                <p className="text-sm font-bold">{s.title}</p>
+                <p className="text-xs opacity-60 mt-0.5 hidden sm:block">{s.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
 
-        {/* MEDIUM CARD */}
-        <button 
-          onClick={() => startGame(Difficulty.INTERMEDIATE)}
-          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl hover:border-[#8a5c2e] group"
-        >
-          <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['KNIGHT']}</div>
-          <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Medium</h3>
-          <div className="w-12 h-[1px] bg-black/10 mb-6" />
-          <div className="space-y-2 mb-8">
-            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>4 pieces</p>
-            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>2 confusers nearby</p>
-          </div>
-          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fef3c7] text-[#92400e]">Developing</span>
-        </button>
-
-        {/* HARD CARD */}
-        <button 
-          onClick={() => startGame(Difficulty.HARD)}
-          className="flex flex-col items-center p-8 bg-white/40 backdrop-blur-sm border border-black/5 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-xl hover:border-[#c47a3a] group"
-        >
-          <div className="w-10 h-10 mb-6 opacity-80 group-hover:scale-110 transition-transform">{PIECE_ICONS['WHITE']['QUEEN']}</div>
-          <h3 className="text-xl font-bold tracking-[0.2em] uppercase mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Hard</h3>
-          <div className="w-12 h-[1px] bg-black/10 mb-6" />
-          <div className="space-y-2 mb-8">
-            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>5 pieces</p>
-            <p className="text-sm opacity-60" style={{ color: PALETTE.PRIMARY_TEXT }}>2 knights or 2 bishops</p>
-          </div>
-          <span className="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#fce7f3] text-[#9d174d]">Advanced</span>
-        </button>
-      </div>
-
-      <div className="mt-16 opacity-80 italic text-[16px] serif text-center z-10 px-6" style={{ color: PALETTE.PRIMARY_TEXT }}>
-        "Vision is the art of seeing what is invisible to others."
-      </div>
-    </div>
-  );
-
-  const renderGameScreen = () => (
-    <div className="flex flex-col items-center w-full max-w-7xl px-4 animate-in fade-in duration-700 pb-10 pt-4 lg:pt-8 overflow-hidden box-border">
-      {/* Mobile Optimized HUD */}
-      <div className="w-full max-w-[500px] mb-6 select-none flex flex-col items-center">
-        {/* Main Stats Bar */}
-        <div 
-          className="w-full bg-white/90 backdrop-blur-md rounded-[12px] p-[10px_16px] flex items-center justify-between shadow-sm border border-black/5 box-border"
-          style={{ maxWidth: '100%' }}
-        >
-          {/* Left: Score */}
-          <div className="flex flex-col items-start">
-            <span className="text-[10px] font-black tracking-[0.2em] uppercase opacity-40 leading-none mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Score</span>
-            <span className="text-[22px] font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
-              {state.score.toString().padStart(4, '0')}
-            </span>
-          </div>
-
-          {/* Center: Strikes */}
-          <div className="flex space-x-1.5 items-center justify-center">
-            {Array.from({ length: MAX_STRIKES }).map((_, i) => (
-              <div 
-                key={i} 
-                className="w-[10px] h-[6px] rounded-full transition-colors duration-300" 
-                style={{ backgroundColor: i < state.strikes ? '#E24B4A' : '#e5e7eb' }} 
-              />
+        {/* Difficulty */}
+        <div className="w-full max-w-3xl mt-8 lg:mt-10">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] opacity-50 mb-3 text-center sm:text-left">Choose a level</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
+            {levels.map((l) => (
+              <button
+                key={l.diff}
+                onClick={() => startGame(l.diff)}
+                className="group relative text-left bg-[#fffaf5] rounded-2xl border border-black/5 shadow-sm p-4 sm:p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:border-[#17695b]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17695b] flex sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0"
+              >
+                <div className="flex items-center justify-between sm:mb-5">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center p-1.5 transition-transform group-hover:scale-105" style={{ backgroundColor: 'rgba(85,30,25,0.05)' }}>
+                    {PIECE_ICONS['WHITE'][l.icon]}
+                  </div>
+                  <div className="hidden sm:flex gap-1" aria-hidden="true">
+                    {[1, 2, 3].map((d) => (
+                      <span key={d} className="w-1.5 h-4 rounded-full" style={{ backgroundColor: d <= l.dots ? '#17695b' : 'rgba(85,30,25,0.12)' }} />
+                    ))}
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="text-xl font-extrabold">{l.name}</h3>
+                    <span className="text-[11px] font-semibold opacity-50">{l.tag}</span>
+                  </div>
+                  <p className="text-sm opacity-65 mt-1">{l.pieces} pieces · {l.detail}</p>
+                </div>
+                <div className="sm:mt-5 flex items-center justify-between">
+                  <span className="hidden sm:inline text-xs opacity-50">2 min · 5 lives</span>
+                  <span className="w-9 h-9 rounded-full flex items-center justify-center transition-colors group-hover:bg-[#17695b] group-hover:text-white" style={{ backgroundColor: 'rgba(85,30,25,0.06)' }} aria-hidden="true">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </span>
+                </div>
+              </button>
             ))}
           </div>
-
-          {/* Right: Time */}
-          <div className="flex flex-col items-end">
-            <span className="text-[10px] font-black tracking-[0.2em] uppercase opacity-40 leading-none mb-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Time</span>
-            <span className="text-[22px] font-black tracking-tighter tabular-nums leading-none" style={{ color: state.timeLeft < 15 ? '#E24B4A' : PALETTE.PRIMARY_TEXT }}>
-              {Math.floor(state.timeLeft / 60)}:{(state.timeLeft % 60).toString().padStart(2, '0')}
-            </span>
-          </div>
         </div>
 
-        {/* Controls Row */}
-        <div className="w-full flex items-center justify-between mt-3 px-2 box-border">
-          {/* Home/Menu */}
-          <button 
-            onClick={goHome} 
-            className="w-11 h-11 flex items-center justify-center rounded-full transition-all active:scale-90"
-            style={{ color: PALETTE.PRIMARY_TEXT }}
-            aria-label="Home Menu"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </button>
-
-          {/* Pause */}
-          <button 
-            onClick={togglePause} 
-            disabled={state.phase !== 'PLAYING'} 
-            className="w-11 h-11 flex items-center justify-center rounded-full transition-all active:scale-90 disabled:opacity-20"
-            style={{ color: PALETTE.PRIMARY_TEXT }}
-            aria-label={isPaused ? "Resume" : "Pause"}
-          >
-            {isPaused ? <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> : <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>}
-          </button>
-
-          {/* Sound */}
-          <button 
-            onClick={toggleMute} 
-            className="w-11 h-11 flex items-center justify-center rounded-full transition-all active:scale-90"
-            style={{ color: PALETTE.PRIMARY_TEXT }}
-            aria-label={isMuted ? "Unmute" : "Mute"}
-          >
-            {isMuted ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg> : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>}
-          </button>
-
-          {/* Fullscreen - Hidden on mobile as per requirement */}
-          <button 
-            onClick={toggleFullscreen} 
-            className="hidden lg:flex w-11 h-11 items-center justify-center rounded-full transition-all active:scale-90"
-            style={{ color: PALETTE.PRIMARY_TEXT }}
-            aria-label="Toggle Fullscreen"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-          </button>
-        </div>
+        <p className="serif italic text-sm lg:text-base opacity-60 mt-10 text-center px-6">“Vision is the art of seeing what is invisible to others.”</p>
       </div>
-      {state.phase === 'OBSERVING' && (
-        <div className="w-full text-center mb-6 animate-in slide-in-from-top-4 duration-500">
-           <p className="serif italic text-2xl lg:text-3xl tracking-wide opacity-90" style={{ color: PALETTE.PRIMARY_TEXT }}>Analyze piece positions carefully.</p>
-           <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40 mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Memorization Phase</p>
-        </div>
-      )}
-      {state.phase === 'PLAYING' && !isPaused && state.targetSquare !== null && (
-        <div className="w-full text-center mb-6 animate-in slide-in-from-top-4 duration-500">
-           <p className="serif italic text-3xl lg:text-4xl tracking-wide opacity-90" style={{ color: PALETTE.PRIMARY_TEXT }}>
-             Move to <span className="font-black not-italic uppercase">{squareToNotation(state.targetSquare)}</span>
-           </p>
-           <p className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40 mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Target Square</p>
-        </div>
-      )}
-      <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-6 lg:gap-12 w-full max-w-[1100px]">
-        <div className="relative order-1">
-          <ChessBoard pieces={state.pieces} targetSquare={isPaused ? null : state.targetSquare} lastMoveLine={isPaused ? null : state.lastMoveLine} />
-          
-          {/* Countdown Overlay */}
-          {countdown !== null && (
-            <div className="absolute inset-0 flex items-center justify-center z-[60] pointer-events-none">
-              <div key={countdown} className="text-8xl lg:text-9xl font-black italic serif animate-in zoom-in fade-in duration-500 drop-shadow-[0_10px_10px_rgba(85,30,25,0.2)]" style={{ color: PALETTE.SECONDARY_BG }}>
-                {countdown > 0 ? countdown : 'GO!'}
-              </div>
-            </div>
-          )}
+    );
+  };
 
-          {state.phase === 'OBSERVING' && countdown === null && (
-            <div className="absolute inset-0 flex items-center justify-center z-50">
-               <button 
-                onClick={beginDrill} 
-                className="button-premium px-10 py-5 rounded-sm hover:scale-105 transition-all group border"
-                style={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  borderColor: `${PALETTE.PRIMARY_TEXT}15`,
-                  boxShadow: `0 20px 40px -10px ${PALETTE.BOARD_DARK}30`
-                }}
-               >
-                  <span className="text-[12px] font-black uppercase tracking-[0.4em]" style={{ color: PALETTE.PRIMARY_TEXT }}>Start Blindfold Drill</span>
-               </button>
-            </div>
-          )}
-          {isPaused && (
-            <div 
-              className="absolute inset-0 glass-panel z-40 flex flex-col items-center justify-center space-y-6 animate-in fade-in duration-300 rounded-sm"
-              style={{ background: 'rgba(255, 255, 255, 0.85)' }}
-            >
-              <h2 className="serif italic text-3xl lg:text-4xl tracking-wide" style={{ color: PALETTE.PRIMARY_TEXT }}>Session Paused</h2>
-              <div className="flex flex-col space-y-3 w-56">
-                <button onClick={togglePause} className="button-premium py-3 px-6 font-bold uppercase tracking-[0.2em] text-[10px] rounded-sm" style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG }}>Resume Game</button>
-                <button onClick={restartCurrentDrill} className="button-premium py-3 px-6 font-bold uppercase tracking-[0.2em] text-[10px] rounded-sm" style={{ backgroundColor: PALETTE.SECONDARY_BG, border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}>Restart Game</button>
-                <button onClick={goHome} className="button-premium py-3 px-6 font-bold uppercase tracking-[0.2em] text-[10px] rounded-sm" style={{ backgroundColor: PALETTE.SECONDARY_BG, border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}>Exit to Home</button>
+  const renderGameScreen = () => {
+    const sessionTypes = (['QUEEN', 'ROOK', 'BISHOP', 'KNIGHT'] as PieceType[]).filter(t => state.pieces.some(p => p.type === t));
+    const timeLow = state.timeLeft < 15;
+    const timeFrac = Math.max(0, Math.min(1, state.timeLeft / START_TIME));
+    const timeColor = state.timeLeft < 15 ? '#d9473f' : state.timeLeft < 30 ? '#c9822b' : '#17695b';
+    const livesLeft = Math.max(0, MAX_STRIKES - state.strikes);
+    const RING_C = 2 * Math.PI * 36;
+    const iconBtn = "w-10 h-10 flex items-center justify-center rounded-full transition-all hover:bg-black/5 active:scale-90 disabled:opacity-25 disabled:hover:bg-transparent";
+
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center px-3 py-3 lg:px-8 lg:py-6 animate-in fade-in duration-700 box-border">
+        <div className="game-grid">
+          {/* ── Stats + controls: chess clock ring ── */}
+          <section className="area-stats select-none flex flex-col gap-2">
+            <div className="bg-[#fffaf5] rounded-2xl border border-black/5 shadow-sm px-5 py-4 flex items-center justify-between" style={{ color: PALETTE.PRIMARY_TEXT }}>
+              {/* Score */}
+              <div className="flex flex-col min-w-[64px]">
+                <span className="text-[10px] font-bold tracking-[0.18em] uppercase opacity-50">Score</span>
+                <span className="text-[28px] font-extrabold tabular-nums leading-tight">{state.score}</span>
+              </div>
+
+              {/* Clock ring */}
+              <div className="relative w-[76px] h-[76px] lg:w-[92px] lg:h-[92px]" role="timer" aria-label={`${state.timeLeft} seconds left`}>
+                <svg viewBox="0 0 84 84" className="w-full h-full -rotate-90">
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(85,30,25,0.1)" strokeWidth="6" />
+                  <circle
+                    cx="42" cy="42" r="36" fill="none"
+                    stroke={timeColor}
+                    strokeWidth="6"
+                    strokeLinecap="round"
+                    strokeDasharray={RING_C}
+                    strokeDashoffset={RING_C * (1 - timeFrac)}
+                    style={{ transition: 'stroke-dashoffset 1s linear, stroke 0.4s ease' }}
+                  />
+                </svg>
+                <div className={`absolute inset-0 flex items-center justify-center text-xl lg:text-[22px] font-extrabold tabular-nums ${timeLow ? 'animate-pulse' : ''}`} style={{ color: timeLow ? timeColor : PALETTE.PRIMARY_TEXT }}>
+                  {Math.floor(state.timeLeft / 60)}:{(state.timeLeft % 60).toString().padStart(2, '0')}
+                </div>
+              </div>
+
+              {/* Lives */}
+              <div className="flex flex-col items-end min-w-[64px]">
+                <span className="text-[10px] font-bold tracking-[0.18em] uppercase opacity-50">Lives</span>
+                <div className="flex gap-0.5 mt-1.5" aria-label={`${livesLeft} of ${MAX_STRIKES} lives left`}>
+                  {Array.from({ length: MAX_STRIKES }).map((_, i) => {
+                    const alive = i < livesLeft;
+                    return (
+                      <svg key={i} width="15" height="15" viewBox="0 0 24 24" className="transition-all duration-300" style={{ transform: alive ? 'scale(1)' : 'scale(0.85)' }}>
+                        <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4.4.6 1.6.6 2 0 .7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"
+                          fill={alive ? '#d9473f' : 'none'} stroke={alive ? '#d9473f' : 'rgba(85,30,25,0.22)'} strokeWidth="2" />
+                      </svg>
+                    );
+                  })}
+                </div>
+                <span className="text-[11px] font-semibold opacity-50 mt-1 tabular-nums">{livesLeft} left</span>
               </div>
             </div>
-          )}
-        </div>
-        <div className="flex flex-col items-center lg:items-start w-full lg:w-auto order-2">
-          <div 
-            className="flex flex-row lg:flex-col justify-center gap-3 lg:gap-6 w-full lg:w-40 p-4 lg:p-6 glass-panel rounded-xl lg:rounded-2xl" 
-            style={{ 
-              opacity: (state.phase !== 'PLAYING' || isPaused) ? 0.3 : 1,
-              boxShadow: `0 20px 40px -10px ${PALETTE.BOARD_DARK}20` 
+
+            {/* Controls */}
+            <div className="flex items-center justify-center gap-2" style={{ color: PALETTE.PRIMARY_TEXT }}>
+              <button onClick={goHome} className={iconBtn} aria-label="Home" title="Home">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </button>
+              <button onClick={togglePause} disabled={state.phase !== 'PLAYING'} className={iconBtn} aria-label={isPaused ? 'Resume' : 'Pause'} title={isPaused ? 'Resume' : 'Pause'}>
+                {isPaused ? <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> : <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>}
+              </button>
+              <button onClick={toggleMute} className={iconBtn} aria-label={isMuted ? 'Unmute' : 'Mute'} title={isMuted ? 'Unmute' : 'Mute'}>
+                {isMuted ? <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>}
+              </button>
+              <button onClick={toggleFullscreen} className={`${iconBtn} hidden lg:flex`} aria-label="Toggle fullscreen" title="Fullscreen">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </button>
+            </div>
+          </section>
+
+          {/* ── What to do now ── */}
+          <section className="area-prompt flex flex-col items-center lg:items-start text-center lg:text-left select-none">
+            {state.phase === 'OBSERVING' && (
+              <>
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>Step 1 · Memorize</span>
+                <p className="serif italic text-2xl lg:text-3xl mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Study the position.</p>
+                <p className="text-sm opacity-60 mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>The pieces disappear when you start.</p>
+                <button
+                  onClick={beginDrill}
+                  disabled={countdown !== null}
+                  className="button-premium mt-4 w-full max-w-xs lg:max-w-none py-3.5 rounded-xl transition-all disabled:opacity-50"
+                  style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 12px 24px -12px ${PALETTE.BOARD_DARK}` }}
+                >
+                  <span className="text-xs font-bold uppercase tracking-[0.2em]">{countdown !== null ? 'Get ready…' : "I'm ready"}</span>
+                </button>
+              </>
+            )}
+            {state.phase === 'PLAYING' && (
+              <>
+                <span className="text-[10px] font-bold uppercase tracking-[0.25em] opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>
+                  {isPaused ? 'Paused' : 'Step 2 · Which piece can reach'}
+                </span>
+                <p className="leading-none mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>
+                  <span className="serif font-bold text-5xl lg:text-6xl">
+                    {isPaused || state.targetSquare === null ? '—' : squareToNotation(state.targetSquare).toLowerCase()}
+                  </span>
+                </p>
+                <p className="text-sm opacity-60 mt-2" style={{ color: PALETTE.PRIMARY_TEXT }}>
+                  {isPaused ? 'Resume when you’re ready.' : 'Tap the piece that can move there.'}
+                </p>
+              </>
+            )}
+          </section>
+
+          {/* ── Board ── */}
+          <section className="area-board relative flex items-center justify-center">
+            <div className="relative">
+              <ChessBoard pieces={state.pieces} targetSquare={isPaused ? null : state.targetSquare} lastMoveLine={isPaused ? null : state.lastMoveLine} />
+
+              {countdown !== null && (
+                <div className="absolute inset-0 flex items-center justify-center z-[60] pointer-events-none rounded-[14px]" style={{ background: 'rgba(40, 15, 10, 0.35)' }}>
+                  <div key={countdown} className="text-8xl lg:text-9xl font-black italic serif animate-in zoom-in fade-in duration-500 drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]" style={{ color: PALETTE.SECONDARY_BG }}>
+                    {countdown > 0 ? countdown : 'GO!'}
+                  </div>
+                </div>
+              )}
+
+              {isPaused && (
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-5 animate-in fade-in duration-300 rounded-[14px] backdrop-blur-md" style={{ background: 'rgba(255, 250, 244, 0.88)' }}>
+                  <h2 className="serif italic text-3xl lg:text-4xl" style={{ color: PALETTE.PRIMARY_TEXT }}>Paused</h2>
+                  <div className="flex flex-col gap-2.5 w-56">
+                    <button onClick={togglePause} className="button-premium py-3 rounded-xl font-bold uppercase tracking-[0.18em] text-[11px]" style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG }}>Resume</button>
+                    <button onClick={restartCurrentDrill} className="button-premium py-3 rounded-xl font-bold uppercase tracking-[0.18em] text-[11px]" style={{ backgroundColor: PALETTE.SECONDARY_BG, border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}>Restart</button>
+                    <button onClick={goHome} className="button-premium py-3 rounded-xl font-bold uppercase tracking-[0.18em] text-[11px]" style={{ backgroundColor: PALETTE.SECONDARY_BG, border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}>Exit to home</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* ── Piece choices ── */}
+          <section
+            className="area-pieces grid gap-2.5 transition-opacity duration-300"
+            style={{
+              gridTemplateColumns: `repeat(${sessionTypes.length}, minmax(0, 1fr))`,
+              opacity: state.phase !== 'PLAYING' || isPaused ? 0.35 : 1,
             }}
           >
-            {(['QUEEN', 'ROOK', 'BISHOP', 'KNIGHT'] as PieceType[]).map((type) => {
-              const isUsedInSession = state.pieces.some(p => p.type === type);
-              const isDisabled = disabledOptions.includes(type) || isPaused || state.phase === 'OBSERVING' || isProcessing;
+            {sessionTypes.map((type) => {
+              const isDisabled = disabledOptions.includes(type) || isPaused || state.phase !== 'PLAYING' || isProcessing;
               const isPulsing = pulsingPiece === type;
               const feedback = moveFeedback?.type === type ? moveFeedback : null;
-              if (!isUsedInSession) return null;
+              const ruledOut = disabledOptions.includes(type) && !feedback;
               return (
-                <button 
-                  key={type} 
-                  onClick={() => handlePieceSelect(type)} 
-                  disabled={isDisabled} 
-                  className={`relative w-20 h-24 lg:w-28 lg:h-32 p-3 lg:p-4 transition-all flex flex-col items-center justify-between rounded-xl group ${isPulsing ? 'animate-subtle-pulse' : ''}`} 
-                  style={{ 
-                    backgroundColor: PALETTE.SECONDARY_BG, 
-                    border: `1px solid ${isPulsing ? '#b91c1c' : `${PALETTE.BOARD_DARK}15`}`,
-                    opacity: (isDisabled && !feedback && !isPulsing) ? 0.4 : 1,
-                    boxShadow: `0 4px 6px -1px ${PALETTE.BOARD_DARK}05`
+                <button
+                  key={type}
+                  onClick={() => handlePieceSelect(type)}
+                  disabled={isDisabled}
+                  className={`piece-btn relative flex flex-col items-center justify-center gap-1 py-3 rounded-xl bg-white transition-all enabled:hover:-translate-y-0.5 enabled:hover:shadow-md group ${isPulsing ? 'animate-subtle-pulse' : ''}`}
+                  style={{
+                    border: `1.5px solid ${isPulsing ? '#d9473f' : feedback?.status === 'correct' ? '#17695b' : 'rgba(85,30,25,0.1)'}`,
+                    opacity: ruledOut ? 0.35 : 1,
+                    boxShadow: '0 2px 6px -2px rgba(85,30,25,0.12)',
                   }}
                 >
                   {feedback && (
-                    <div className="absolute inset-0 flex items-center justify-center z-20 rounded-xl bg-white/90 backdrop-blur-md animate-in fade-in duration-300">
-                      <div className={`${feedback.status === 'correct' ? 'text-green-700' : 'text-red-700'} font-black text-[8px] lg:text-[10px] uppercase text-center tracking-wider`}>{feedback.status === 'correct' ? 'CORRECT' : 'FAILED'}</div>
+                    <div className={`absolute inset-0 flex items-center justify-center z-20 rounded-xl animate-in fade-in duration-200 ${feedback.status === 'correct' ? 'bg-[#e7f3f0]' : 'bg-[#fbeceb]'}`}>
+                      <span className={`font-bold text-[11px] uppercase tracking-wider ${feedback.status === 'correct' ? 'text-[#17695b]' : 'text-[#b3332c]'}`}>
+                        {feedback.status === 'correct' ? '✓ Correct' : '✕ Wrong'}
+                      </span>
                     </div>
                   )}
-                  <div className="w-full h-12 lg:h-16 flex items-center justify-center group-hover:scale-110 transition-transform"><div className="w-10 h-10 lg:w-14 lg:h-14">{PIECE_ICONS['WHITE'][type]}</div></div>
-                  <span className="text-[8px] lg:text-[10px] font-black uppercase tracking-widest pt-1.5 w-full text-center opacity-40" style={{ color: PALETTE.PRIMARY_TEXT, borderTop: `1px solid ${PALETTE.PRIMARY_TEXT}10` }}>{type}</span>
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 transition-transform group-enabled:group-hover:scale-110">{PIECE_ICONS['WHITE'][type]}</div>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] opacity-55" style={{ color: PALETTE.PRIMARY_TEXT }}>{type.toLowerCase()}</span>
                 </button>
               );
             })}
-          </div>
-          <div className="mt-6 lg:mt-8 text-[10px] lg:text-[11px] font-black uppercase tracking-[0.3em] lg:tracking-[0.4em] text-center lg:text-left serif italic opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>{isPaused ? 'Analysis Suspended' : ''}</div>
+          </section>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderGameOver = () => {
+    const grade = calculateGrade();
+    const attempts = state.correctMoves + state.strikes;
+    const accuracy = attempts ? Math.round((state.correctMoves / attempts) * 100) : 0;
+    const outOfLives = state.strikes >= MAX_STRIKES;
+    const levelName = state.difficulty === Difficulty.EASY ? 'Easy' : state.difficulty === Difficulty.INTERMEDIATE ? 'Medium' : 'Hard';
+    const stats = [
+      { label: 'Correct', value: state.correctMoves },
+      { label: 'Accuracy', value: `${accuracy}%` },
+      { label: 'Best streak', value: state.bestStreak },
+      { label: 'Mistakes', value: `${state.strikes}/${MAX_STRIKES}` },
+    ];
+
     return (
-      <div className="flex flex-col items-center justify-center min-h-[90vh] py-12 px-6 space-y-8 animate-in fade-in zoom-in duration-1000 max-w-3xl text-center relative overflow-hidden">
-        
-        {/* Subtle background piece textures */}
-        <div className="absolute top-20 -left-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] -rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
-          {PIECE_ICONS['WHITE']['QUEEN']}
-        </div>
-        <div className="absolute bottom-20 -right-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.04] rotate-12 pointer-events-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
-          {PIECE_ICONS['WHITE']['KING']}
-        </div>
-
-        {/* Header */}
-        <div className="space-y-4 z-10">
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl serif italic tracking-wide" style={{ color: PALETTE.PRIMARY_TEXT }}>Game Over</h2>
-          <div className="h-[1px] w-32 mx-auto opacity-10" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
-        </div>
-
-        {/* Large Score */}
-        <div className="flex flex-col items-center py-2 lg:py-4 z-10">
-          <span className="text-[80px] sm:text-[100px] lg:text-[140px] font-black tracking-tighter tabular-nums leading-none" style={{ color: PALETTE.PRIMARY_TEXT }}>
-             {state.score}
+      <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 py-10 animate-in fade-in zoom-in-95 duration-700 box-border" style={{ color: PALETTE.PRIMARY_TEXT }}>
+        <div className="w-full max-w-md flex flex-col items-center text-center">
+          {/* Why it ended */}
+          <span
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+            style={outOfLives ? { backgroundColor: '#fbeceb', color: '#a3352e' } : { backgroundColor: 'rgba(23,105,91,0.12)', color: '#17695b' }}
+          >
+            {outOfLives ? (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4.4.6 1.6.6 2 0 .7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></svg>
+            )}
+            {outOfLives ? 'Out of lives' : "Time's up"} · {levelName}
           </span>
-           <span className="uppercase tracking-[0.3em] sm:tracking-[0.6em] text-[8px] sm:text-[10px] font-bold opacity-40 mt-4" style={{ color: PALETTE.PRIMARY_TEXT }}>Final Score</span>
-        </div>
 
-        {/* Quote */}
-        <div className="max-w-md mx-auto z-10">
-            <p className="text-lg lg:text-xl serif italic opacity-80" style={{ color: PALETTE.PRIMARY_TEXT }}>“Visualization improves by doing.”</p>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-8 w-full max-w-md pt-6 mt-4 z-10" style={{ borderTop: `1px solid ${PALETTE.PRIMARY_TEXT}10` }}>
-          <div className="flex flex-col items-center justify-center space-y-1">
-              <span className="uppercase tracking-[0.2em] text-[9px] font-black opacity-30" style={{ color: PALETTE.PRIMARY_TEXT }}>Correct Moves</span>
-              <span className="text-2xl font-black tabular-nums" style={{ color: PALETTE.PRIMARY_TEXT }}>{state.correctMoves}</span>
-          </div>
-          <div className="flex flex-col items-center justify-center space-y-1 border-l" style={{ borderColor: `${PALETTE.PRIMARY_TEXT}10` }}>
-              <span className="uppercase tracking-[0.2em] text-[9px] font-black opacity-30" style={{ color: PALETTE.PRIMARY_TEXT }}>Peak Streak</span>
-              <span className="text-2xl font-black tabular-nums" style={{ color: PALETTE.BOARD_LIGHT }}>{state.bestStreak}</span>
-          </div>
-        </div>
-
-        {/* CTA & Buttons */}
-        <div className="flex flex-col items-center space-y-6 pt-8 z-10">
-            <p className="uppercase tracking-[0.3em] text-[10px] font-black opacity-40" style={{ color: PALETTE.PRIMARY_TEXT }}>Ready to try again?</p>
-            <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 lg:space-x-8">
-            <button onClick={restartCurrentDrill} className="button-premium border py-4 px-10 text-[10px] font-black uppercase tracking-[0.3em] rounded-sm" style={{ backgroundColor: PALETTE.SECONDARY_BG, borderColor: `${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT, boxShadow: `0 4px 6px -1px ${PALETTE.BOARD_DARK}10` }}>Restart Game</button>
-            <button onClick={goHome} className="button-premium py-4 px-10 text-[10px] font-black uppercase tracking-[0.3em] rounded-sm" style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 10px 15px -3px ${PALETTE.BOARD_DARK}40` }}>Exit to Home</button>
+          {/* Score + grade */}
+          <div className="w-full mt-5 bg-[#fffaf5] rounded-3xl border border-black/5 shadow-sm p-6 sm:p-8">
+            <div className="flex items-center justify-between gap-6">
+              <div className="text-left">
+                <span className="text-[10px] font-bold tracking-[0.18em] uppercase opacity-50">Final score</span>
+                <div className="text-6xl sm:text-7xl font-extrabold tabular-nums leading-none mt-1">{state.score}</div>
+              </div>
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
+                <svg viewBox="0 0 84 84" className="w-full h-full -rotate-90">
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(85,30,25,0.1)" strokeWidth="6" />
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="#17695b" strokeWidth="6" strokeLinecap="round"
+                    strokeDasharray={2 * Math.PI * 36} strokeDashoffset={2 * Math.PI * 36 * (1 - accuracy / 100)} />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="serif font-bold text-3xl sm:text-4xl leading-none">{grade.rank}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.15em] opacity-50 mt-0.5">Grade</span>
+                </div>
+              </div>
             </div>
+
+            <div className="text-left mt-6 pt-5 border-t border-black/5">
+              <p className="serif italic text-xl sm:text-2xl">{grade.label}</p>
+              <p className="text-sm opacity-65 mt-1.5 leading-relaxed">{grade.desc}</p>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="w-full grid grid-cols-4 gap-2 mt-3">
+            {stats.map((s) => (
+              <div key={s.label} className="bg-[#fffaf5]/70 rounded-2xl border border-black/5 py-3 px-1">
+                <div className="text-lg sm:text-xl font-extrabold tabular-nums">{s.value}</div>
+                <div className="text-[10px] font-semibold opacity-50 mt-0.5">{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="w-full flex flex-col sm:flex-row gap-2.5 mt-7">
+            <button
+              onClick={restartCurrentDrill}
+              className="button-premium flex-1 py-3.5 rounded-xl text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center justify-center gap-2"
+              style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 12px 24px -12px ${PALETTE.BOARD_DARK}` }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+              Play again
+            </button>
+            <button
+              onClick={goHome}
+              className="button-premium flex-1 py-3.5 rounded-xl text-xs font-bold uppercase tracking-[0.2em] bg-white"
+              style={{ border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}
+            >
+              Change level
+            </button>
+          </div>
+
+          <p className="serif italic text-sm opacity-55 mt-8">“Visualization improves by doing.”</p>
         </div>
       </div>
     );
@@ -564,10 +596,6 @@ const App: React.FC = () => {
         {(state.phase === 'OBSERVING' || state.phase === 'PLAYING') && renderGameScreen()}
         {state.phase === 'GAMEOVER' && renderGameOver()}
       </main>
-      <div className="fixed bottom-10 left-10 flex flex-col opacity-10 pointer-events-none hidden xl:flex">
-        <div className="text-[14px] oleo tracking-widest" style={{ color: PALETTE.PRIMARY_TEXT }}>MindBoard</div>
-        <div className="text-[9px] font-black uppercase tracking-[1.2em]" style={{ color: PALETTE.PRIMARY_TEXT }}>Blindfold Chess Trainer</div>
-      </div>
     </div>
   );
 };

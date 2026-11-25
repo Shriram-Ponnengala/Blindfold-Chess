@@ -63,6 +63,70 @@
         .animate-pulse-slow {
             animation: pulse-slow 3s ease-in-out infinite;
         }
+        /* Mobile: stacked — stats, prompt, board, pieces */
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-areas: "stats" "prompt" "board" "pieces";
+            gap: 14px;
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        .area-stats { grid-area: stats; }
+        .area-prompt { grid-area: prompt; }
+        .area-board { grid-area: board; }
+        .area-pieces { grid-area: pieces; }
+        .board-size {
+            width: min(calc(100vw - 40px), calc(100vh - 380px), 560px);
+            height: min(calc(100vw - 40px), calc(100vh - 380px), 560px);
+            min-width: 280px;
+            min-height: 280px;
+        }
+        /* Desktop: board left, one sidebar right */
+        @media (min-width: 1024px) {
+            .game-grid {
+                grid-template-columns: auto 300px;
+                grid-template-rows: auto auto 1fr;
+                grid-template-areas:
+                    "board stats"
+                    "board prompt"
+                    "board pieces";
+                column-gap: 40px;
+                row-gap: 28px;
+                max-width: none;
+                width: auto;
+            }
+            .area-pieces { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; align-content: start; }
+            .area-pieces .piece-btn { padding-top: 18px; padding-bottom: 18px; }
+            .board-size {
+                width: min(calc(100vh - 64px), calc(100vw - 420px), 760px);
+                height: min(calc(100vh - 64px), calc(100vw - 420px), 760px);
+            }
+        }
+        @keyframes target-ring {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-target-ring {
+            animation: target-ring 1.8s ease-in-out infinite;
+        }
+        @keyframes arrow-fade {
+            0% { opacity: 0; }
+            15% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .animate-arrow-fade {
+            animation: arrow-fade 1.6s ease-out forwards;
+        }
+        @keyframes move-tint {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .animate-move-tint {
+            animation: move-tint 2.4s ease-in 0.6s forwards;
+        }
         .glass-panel {
             /* Secondary Background with transparency */
             background: rgba(255, 255, 255, 0.75);
