@@ -71,52 +71,84 @@ export function getRandomSquare(exclude: number[] = []): number {
   return sq;
 }
 
-export function findValidTarget(pieces: Piece[], difficulty: Difficulty): number {
-  const usedSquares = pieces.map(p => p.square);
-  
-  // Try many random squares to find one that satisfies the "unique reachability" and "confuser" constraints
-  for (let tt = 0; tt < 200; tt++) {
-    const target = Math.floor(Math.random() * 64);
-    if (usedSquares.includes(target)) continue;
-
-    const reachable = pieces.filter(p => canPieceReach(p.square, target, p.type, pieces));
-    if (reachable.length !== 1) continue;
-
-    const tr = Math.floor(target / 8);
-    const tc = target % 8;
-    const confusers = pieces.filter(p => {
-      if (reachable.includes(p)) return false;
-      const pr = Math.floor(p.square / 8);
-      const pc = p.square % 8;
-      // Confusers: nearby (Manhattan distance <= 4) but can't legally reach
-      return Math.abs(pr - tr) + Math.abs(pc - tc) <= 4;
-    });
-
-    const minConfusers = difficulty === Difficulty.EASY ? 1 : difficulty === Difficulty.INTERMEDIATE ? 1 : 2;
-    if (confusers.length < minConfusers) continue;
-
-    return target;
-  }
-  
-  // Fallback: if no "perfect" target found, use a simpler reachability check
-  const squareReachCounts = new Map<number, number>();
+/**
+ * For every empty square, list the pieces that can legally move there.
+ */
+function reachersBySquare(pieces: Piece[]): Map<number, Piece[]> {
+  const occupied = new Set(pieces.map(p => p.square));
+  const map = new Map<number, Piece[]>();
   pieces.forEach(p => {
     const blockers = pieces.map(b => b.square).filter(sq => sq !== p.square);
-    const moves = getLegalMoves(p.square, p.type, blockers).filter(m => !usedSquares.includes(m));
-    moves.forEach(m => {
-      squareReachCounts.set(m, (squareReachCounts.get(m) || 0) + 1);
+    getLegalMoves(p.square, p.type, blockers).forEach(m => {
+      if (occupied.has(m)) return; // targets are always empty squares
+      const list = map.get(m) || [];
+      list.push(p);
+      map.set(m, list);
     });
   });
+  return map;
+}
 
-  const uniqueTargets = Array.from(squareReachCounts.entries())
-    .filter(([_, count]) => count === 1)
-    .map(([sq, _]) => sq);
+/**
+ * A "confuser" is a piece that sits close to the target (within 2 squares)
+ * but cannot move there, so it looks like a plausible answer.
+ */
+function countConfusers(target: number, answer: Piece, pieces: Piece[]): number {
+  const tr = Math.floor(target / 8);
+  const tc = target % 8;
+  return pieces.filter(p => {
+    if (p.id === answer.id || p.type === answer.type) return false;
+    const pr = Math.floor(p.square / 8);
+    const pc = p.square % 8;
+    return Math.max(Math.abs(pr - tr), Math.abs(pc - tc)) <= 2;
+  }).length;
+}
 
-  if (uniqueTargets.length > 0) {
-    return uniqueTargets[Math.floor(Math.random() * uniqueTargets.length)];
+/**
+ * Pick the next target square. The returned square is ALWAYS empty and
+ * reachable by EXACTLY ONE piece, so there is exactly one right answer.
+ * Returns -1 only when no such square exists (the caller must then
+ * set up a fresh position).
+ *
+ * Among valid squares it prefers ones with nearby confusers (more on
+ * harder levels) and pieces that haven't been the answer recently.
+ */
+export function findValidTarget(pieces: Piece[], difficulty: Difficulty, history: string[] = []): number {
+  const candidates = Array.from(reachersBySquare(pieces).entries())
+    .filter(([, reachers]) => reachers.length === 1)
+    .map(([sq, reachers]) => ({ sq, answer: reachers[0] }));
+
+  if (candidates.length === 0) return -1;
+
+  const wantConfusers = difficulty === Difficulty.EASY ? 0 : difficulty === Difficulty.INTERMEDIATE ? 1 : 2;
+  const last = history[history.length - 1];
+  const prev = history[history.length - 2];
+
+  const weighted = candidates.map(c => {
+    let w = 1;
+    const confusers = countConfusers(c.sq, c.answer, pieces);
+    if (confusers >= wantConfusers) w *= 3;
+    // Rotate answers: avoid the same piece over and over
+    const recent = history.filter(id => id === c.answer.id).length;
+    w *= Math.max(0.15, 1 - recent * 0.25);
+    if (last === c.answer.id) w *= 0.3;
+    if (last === c.answer.id && prev === c.answer.id) w *= 0.1;
+    return { ...c, w };
+  });
+
+  const total = weighted.reduce((sum, c) => sum + c.w, 0);
+  let r = Math.random() * total;
+  for (const c of weighted) {
+    if (r < c.w) return c.sq;
+    r -= c.w;
   }
+  return weighted[weighted.length - 1].sq;
+}
 
-  return -1;
+/** True when the square has exactly one piece that can reach it. */
+export function hasUniqueAnswer(target: number, pieces: Piece[]): boolean {
+  if (target < 0 || target > 63 || pieces.some(p => p.square === target)) return false;
+  return pieces.filter(p => canPieceReach(p.square, target, p.type, pieces)).length === 1;
 }
 
 export function generatePosition(difficulty: Difficulty): { pieces: Piece[], targetSquare: number } | null {
@@ -177,86 +209,4 @@ export function squareToNotation(square: number): string {
   const file = files[square % 8];
   const rank = 8 - Math.floor(square / 8);
   return `${file}${rank}`;
-}
-
-export function generateTargetSquare(pieces: Piece[], history: string[]): number {
-  const pieceMoves = new Map<string, number[]>();
-  const squareReachCounts = new Map<number, number>();
-  const squareReacher = new Map<number, string>();
-
-  // 1. Calculate all legal moves and reachability counts for the CURRENT board state
-  pieces.forEach(p => {
-    const blockers = pieces.map(b => b.square).filter(sq => sq !== p.square);
-    const moves = getLegalMoves(p.square, p.type, blockers);
-    // Target must be empty (no captures allowed in this drill mode)
-    const validMoves = moves.filter(m => !pieces.some(occupied => occupied.square === m));
-    
-    pieceMoves.set(p.id, validMoves);
-    
-    validMoves.forEach(m => {
-      const count = squareReachCounts.get(m) || 0;
-      squareReachCounts.set(m, count + 1);
-      if (count === 0) {
-        squareReacher.set(m, p.id);
-      }
-    });
-  });
-
-  // 2. Identify unique targets (reachable by EXACTLY one piece)
-  const uniqueTargets: number[] = [];
-  for (const [sq, count] of squareReachCounts.entries()) {
-    if (count === 1) {
-      uniqueTargets.push(sq);
-    }
-  }
-
-  // Fallback: if no unique targets exist, pick any valid target to prevent crash
-  if (uniqueTargets.length === 0) {
-    const allMoves: number[] = [];
-    pieceMoves.forEach(moves => allMoves.push(...moves));
-    if (allMoves.length === 0) return -1; // Stalemate / No moves possible
-    return allMoves[Math.floor(Math.random() * allMoves.length)];
-  }
-
-  // 3. Weighting logic: Prefer moving pieces that haven't moved recently
-  const pieceWeights = new Map<string, number>();
-  pieces.forEach(p => {
-    let weight = 1.0;
-    const historyCount = history.filter(id => id === p.id).length;
-    weight -= historyCount * 0.3; // Penalty for frequent moves
-    
-    // Strong penalty if it was the VERY last piece moved
-    if (history.length > 0 && history[history.length - 1] === p.id) {
-        weight -= 0.6;
-    }
-    
-    // Max penalty if it moved twice in a row (prevent spamming same piece)
-    if (history.length >= 2 && history[history.length - 1] === p.id && history[history.length - 2] === p.id) {
-        weight = 0;
-    }
-    
-    pieceWeights.set(p.id, Math.max(0, weight));
-  });
-
-  // 4. Select a target from uniqueTargets based on the weight of the piece that reaches it
-  let totalPoolWeight = 0;
-  const weightedPool = uniqueTargets.map(sq => {
-    const pieceId = squareReacher.get(sq)!;
-    const weight = pieceWeights.get(pieceId) || 0;
-    totalPoolWeight += weight;
-    return { sq, weight };
-  });
-
-  if (totalPoolWeight <= 0) {
-    // If all weights are 0 (e.g. forced to move same piece), just pick random unique target
-    return uniqueTargets[Math.floor(Math.random() * uniqueTargets.length)];
-  }
-
-  let random = Math.random() * totalPoolWeight;
-  for (const item of weightedPool) {
-    if (random < item.weight) return item.sq;
-    random -= item.weight;
-  }
-
-  return weightedPool[0].sq;
 }

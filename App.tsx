@@ -1,13 +1,17 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GameState, GamePhase, Difficulty, Piece, PieceType } from './types';
-import { getRandomSquare, generateTargetSquare, canPieceReach, generatePosition, findValidTarget, squareToNotation } from './services/chessLogic';
+import { canPieceReach, generatePosition, findValidTarget, squareToNotation } from './services/chessLogic';
 import { PALETTE, PIECE_ICONS } from './constants';
 import ChessBoard from './components/ChessBoard';
-import { soundService } from './services/soundService';
+import { soundService, haptics } from './services/soundService';
 
 const START_TIME = 120;
 const MAX_STRIKES = 5;
+const BASE_POINTS = 10;
+
+/** Speed bonus on top of the base points. */
+const speedBonus = (secs: number) => (secs < 2 ? { pts: 5, label: 'Lightning' } : secs < 4 ? { pts: 3, label: 'Quick' } : { pts: 0, label: '' });
 
 const App: React.FC = () => {
   const [state, setState] = useState<GameState>({
@@ -34,6 +38,20 @@ const App: React.FC = () => {
   const [pulsingPiece, setPulsingPiece] = useState<PieceType | null>(null);
   const [moveFeedback, setMoveFeedback] = useState<{ type: PieceType; status: 'correct' | 'incorrect' } | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [pop, setPop] = useState<{ id: number; square: number; text: string; sub?: string; tone: 'good' | 'bad' } | null>(null);
+  const targetShownAt = useRef<number>(Date.now());
+  const popId = useRef(0);
+
+  const showPop = (square: number, text: string, tone: 'good' | 'bad', sub?: string) => {
+    const id = ++popId.current;
+    setPop({ id, square, text, sub, tone });
+    setTimeout(() => setPop(p => (p?.id === id ? null : p)), 1100);
+  };
+
+  // Start the answer clock whenever a new target appears or play resumes
+  useEffect(() => {
+    if (state.phase === 'PLAYING' && !isPaused) targetShownAt.current = Date.now();
+  }, [state.targetSquare, state.phase, isPaused]);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -69,6 +87,7 @@ const App: React.FC = () => {
     setDisabledOptions([]);
     setPulsingPiece(null);
     setMoveFeedback(null);
+    setPop(null);
     setState({
       phase: 'OBSERVING',
       difficulty: diff,
@@ -103,7 +122,7 @@ const App: React.FC = () => {
         if (prev.phase !== 'OBSERVING') return prev;
         
         // Generate the first target based on initial positions
-        const nextTarget = findValidTarget(prev.pieces, prev.difficulty);
+        const nextTarget = findValidTarget(prev.pieces, prev.difficulty, prev.moveHistory);
         
         return {
           ...prev,
@@ -131,6 +150,7 @@ const App: React.FC = () => {
     setDisabledOptions([]);
     setPulsingPiece(null);
     setMoveFeedback(null);
+    setPop(null);
     setState({
       phase: 'START',
       difficulty: Difficulty.EASY,
@@ -176,7 +196,14 @@ const App: React.FC = () => {
 
     if (validPiece) {
       setIsProcessing(true); // LOCK INPUT
-      soundService.playCorrect();
+      const secs = (Date.now() - targetShownAt.current) / 1000;
+      const bonus = speedBonus(secs);
+      const points = BASE_POINTS + bonus.pts;
+      const streakHit = (state.currentStreak + 1) % 5 === 0;
+
+      if (streakHit) { soundService.playStreak(); haptics.streak(); }
+      else { soundService.playCorrect(bonus.pts > 0); haptics.correct(); }
+      showPop(state.targetSquare, `+${points}`, 'good', streakHit ? `${state.currentStreak + 1} in a row!` : bonus.label || undefined);
       setMoveFeedback({ type, status: 'correct' });
       setDisabledOptions([]);
 
@@ -185,36 +212,42 @@ const App: React.FC = () => {
         setState(prev => {
           const userMoveFrom = validPiece.square;
           const userMoveTo = prev.targetSquare!;
-          
+
           // Move the selected piece to the target
           const updatedPieces = prev.pieces.map(p => p.id === validPiece.id ? { ...p, square: userMoveTo } : p);
-          
+
           // Update history
           const updatedHistory = [...prev.moveHistory, validPiece.id];
           if (updatedHistory.length > 5) updatedHistory.shift();
 
-          // Generate next target based on new positions
-          const nextTarget = findValidTarget(updatedPieces, prev.difficulty);
           const newStreak = prev.currentStreak + 1;
-          
-          return {
+          const scored = {
             ...prev,
-            score: prev.score + 10,
-            pieces: updatedPieces,
+            score: prev.score + points,
             moveHistory: updatedHistory,
-            // Show arrow from the piece's original square to the target square the user just hit
-            lastMoveLine: [userMoveFrom, userMoveTo],
-            targetSquare: nextTarget,
             correctMoves: prev.correctMoves + 1,
             currentStreak: newStreak,
             bestStreak: Math.max(prev.bestStreak, newStreak),
           };
+
+          // Next target: always exactly one piece can reach it
+          const nextTarget = findValidTarget(updatedPieces, prev.difficulty, updatedHistory);
+          if (nextTarget !== -1) {
+            return { ...scored, pieces: updatedPieces, lastMoveLine: [userMoveFrom, userMoveTo], targetSquare: nextTarget };
+          }
+
+          // No square has a single answer: deal a fresh position to memorize (clock stops meanwhile)
+          const fresh = generatePosition(prev.difficulty);
+          if (!fresh) return { ...scored, phase: 'GAMEOVER' };
+          return { ...scored, phase: 'OBSERVING', pieces: fresh.pieces, lastMoveLine: null, targetSquare: null, moveHistory: [] };
         });
         setIsProcessing(false); // UNLOCK INPUT
       }, 500);
     } else {
       setIsProcessing(true); // LOCK INPUT
       soundService.playIncorrect();
+      haptics.wrong();
+      showPop(state.targetSquare, '−1', 'bad', 'life');
       setPulsingPiece(type);
       setMoveFeedback({ type, status: 'incorrect' });
       
@@ -248,9 +281,9 @@ const App: React.FC = () => {
 
   const renderStartScreen = () => {
     const levels = [
-      { diff: Difficulty.EASY, name: 'Easy', icon: 'PAWN' as PieceType, tag: 'Beginner', pieces: 3, detail: '1 confuser nearby', dots: 1 },
-      { diff: Difficulty.INTERMEDIATE, name: 'Medium', icon: 'KNIGHT' as PieceType, tag: 'Developing', pieces: 4, detail: '2 confusers nearby', dots: 2 },
-      { diff: Difficulty.HARD, name: 'Hard', icon: 'QUEEN' as PieceType, tag: 'Advanced', pieces: 5, detail: '2 knights or 2 bishops', dots: 3 },
+      { diff: Difficulty.EASY, name: 'Easy', icon: 'PAWN' as PieceType, tag: 'Beginner', pieces: 3, detail: 'Queen, rook, bishop or knight', dots: 1 },
+      { diff: Difficulty.INTERMEDIATE, name: 'Medium', icon: 'KNIGHT' as PieceType, tag: 'Developing', pieces: 4, detail: 'One of each piece', dots: 2 },
+      { diff: Difficulty.HARD, name: 'Hard', icon: 'QUEEN' as PieceType, tag: 'Advanced', pieces: 5, detail: 'Includes 2 knights or 2 bishops', dots: 3 },
     ];
     const steps = [
       { n: 1, title: 'Memorize', text: 'Study where each piece stands.' },
@@ -326,6 +359,8 @@ const App: React.FC = () => {
   };
 
   const renderGameScreen = () => {
+    // Back in memorize mode mid-game means the position was re-dealt
+    const notice = state.phase === 'OBSERVING' && state.correctMoves > 0 ? 'New position. Memorize it, then continue.' : null;
     const sessionTypes = (['QUEEN', 'ROOK', 'BISHOP', 'KNIGHT'] as PieceType[]).filter(t => state.pieces.some(p => p.type === t));
     const timeLow = state.timeLeft < 15;
     const timeFrac = Math.max(0, Math.min(1, state.timeLeft / START_TIME));
@@ -404,15 +439,15 @@ const App: React.FC = () => {
           <section className="area-prompt flex flex-col items-center lg:items-start text-center lg:text-left select-none">
             {state.phase === 'OBSERVING' && (
               <>
-                <span className="text-xs font-bold opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>Step 1 · Memorize</span>
+                <span className="text-xs font-bold opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>{notice ? 'New position' : 'Step 1 · Memorize'}</span>
                 <p className="serif font-semibold text-2xl lg:text-3xl mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Study the position.</p>
-                <p className="text-sm text-[#6f6a62] mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>The pieces disappear when you start.</p>
+                <p className="text-sm text-[#6f6a62] mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>{notice ?? 'The pieces disappear when you start.'}</p>
                 <button
                   onClick={beginDrill}
                   disabled={countdown !== null}
                   className="mt-4 w-full max-w-xs lg:max-w-none min-h-12 rounded-full bg-[#2f7d4f] px-6 text-base font-semibold text-white shadow-sm transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
                 >
-                  <span>{countdown !== null ? 'Get ready…' : "I'm ready"}</span>
+                  <span>{countdown !== null ? 'Get ready…' : notice ? 'Continue' : "I'm ready"}</span>
                 </button>
               </>
             )}
@@ -436,7 +471,7 @@ const App: React.FC = () => {
           {/* ── Board ── */}
           <section className="area-board relative flex items-center justify-center">
             <div className="relative">
-              <ChessBoard pieces={state.pieces} targetSquare={isPaused ? null : state.targetSquare} lastMoveLine={isPaused ? null : state.lastMoveLine} />
+              <ChessBoard pieces={state.pieces} targetSquare={isPaused ? null : state.targetSquare} lastMoveLine={isPaused ? null : state.lastMoveLine} pop={isPaused ? null : pop} />
 
               {countdown !== null && (
                 <div className="absolute inset-0 flex items-center justify-center z-[60] pointer-events-none rounded-[6px]" style={{ background: 'rgba(31, 29, 26, 0.45)' }}>

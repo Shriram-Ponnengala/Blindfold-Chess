@@ -6,6 +6,7 @@ interface ChessBoardProps {
   pieces: Piece[];
   targetSquare: number | null;
   lastMoveLine: [number, number] | null;
+  pop?: { id: number; square: number; text: string; sub?: string; tone: 'good' | 'bad' } | null;
 }
 
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -18,7 +19,7 @@ const center = (idx: number) => ({
   y: Math.floor(idx / 8) * 12.5 + 6.25,
 });
 
-const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveLine }) => {
+const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveLine, pop }) => {
   const arrow = (() => {
     if (!lastMoveLine) return null;
     const a = center(lastMoveLine[0]);
@@ -46,7 +47,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveL
       }}
     >
       <div
-        className="board-size relative grid grid-cols-8 grid-rows-8 overflow-hidden select-none"
+        className="board-size relative grid grid-cols-8 grid-rows-8 select-none"
         style={{ boxShadow: '0 0 0 1px rgb(0 0 0 / 0.45)' }}
       >
         {Array.from({ length: 64 }).map((_, i) => {
@@ -151,6 +152,33 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveL
               markerEnd="url(#mb-arrowhead)"
             />
           </svg>
+        )}
+
+        {/* Points pop: floats up from the answered square */}
+        {pop && (
+          <div
+            key={pop.id}
+            className="absolute z-40 pointer-events-none animate-points-pop flex flex-col items-center"
+            style={{ left: `${(pop.square % 8) * 12.5 + 6.25}%`, top: `${Math.floor(pop.square / 8) * 12.5 + 6.25}%` }}
+          >
+            <span
+              className="font-extrabold text-2xl sm:text-3xl leading-none px-3 py-1.5 rounded-full text-white tabular-nums"
+              style={{
+                backgroundColor: pop.tone === 'good' ? BOARD_THEME.TARGET : '#c0392b',
+                boxShadow: '0 6px 16px -4px rgba(0,0,0,0.45), 0 0 0 2px rgba(255,255,255,0.85)',
+              }}
+            >
+              {pop.text}
+            </span>
+            {pop.sub && (
+              <span
+                className="mt-1 text-[11px] sm:text-xs font-bold px-2 py-0.5 rounded-full whitespace-nowrap"
+                style={{ backgroundColor: 'rgba(255,255,255,0.95)', color: pop.tone === 'good' ? BOARD_THEME.TARGET : '#c0392b' }}
+              >
+                {pop.sub}
+              </span>
+            )}
+          </div>
         )}
       </div>
     </div>
