@@ -276,11 +276,12 @@ const App: React.FC = () => {
   const calculateGrade = () => {
     const accuracy = state.correctMoves / (state.correctMoves + state.strikes || 1);
     const score = state.score;
-    if (score >= 200 && accuracy >= 0.9) return { rank: 'S', label: 'Grandmaster Sight', desc: 'Flawless board tracking. Your visualization capacity exceeds standard academy metrics.' };
-    if (score >= 150 && accuracy >= 0.8) return { rank: 'A', label: 'Masterful Control', desc: 'High accuracy and speed. You possess a strong mental grasp of board dynamics.' };
-    if (score >= 80) return { rank: 'B', label: 'Tactical Competence', desc: 'Solid performance. Continue drilling to reduce tracking errors under time pressure.' };
-    if (score >= 40) return { rank: 'C', label: 'Developing Vision', desc: 'Basic visualization established. Focus on identifying piece paths more consistently.' };
-    return { rank: 'D', label: 'Vision Under Review', desc: 'Concentrate on static board memory before attempting rapid sequence tracking.' };
+    if (state.correctMoves + state.strikes === 0) return { rank: '–', label: 'No answers this time', desc: 'Answer at least one target to get a grade. Take your time memorizing, then trust your picture of the board.' };
+    if (score >= 200 && accuracy >= 0.9) return { rank: 'S', label: 'Grandmaster Vision', desc: 'You tracked every piece without slipping. Outstanding board sight.' };
+    if (score >= 150 && accuracy >= 0.8) return { rank: 'A', label: 'Sharp Vision', desc: 'Fast and accurate. You are holding the whole board clearly in your head.' };
+    if (score >= 80) return { rank: 'B', label: 'Solid Vision', desc: 'Good work. A few more rounds will make your tracking quicker and steadier.' };
+    if (score >= 40) return { rank: 'C', label: 'Growing Vision', desc: 'The skill is building. Before you tap, picture the path each piece would take.' };
+    return { rank: 'D', label: 'Keep Practicing', desc: 'Every round strengthens your board memory. Spend a little longer memorizing, then go one move at a time.' };
   };
 
   const renderStartScreen = () => {
@@ -559,7 +560,7 @@ const App: React.FC = () => {
           {/* Why it ended */}
           <span
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
-            style={outOfLives ? { backgroundColor: '#c0392b1a', color: '#c0392b' } : { backgroundColor: 'rgba(47,125,79,0.12)', color: '#2f7d4f' }}
+            style={outOfLives ? { backgroundColor: '#c0392b1a', color: '#c0392b' } : { backgroundColor: 'rgba(31,29,26,0.07)', color: '#6f6a62' }}
           >
             {outOfLives ? (
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4.4.6 1.6.6 2 0 .7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>
