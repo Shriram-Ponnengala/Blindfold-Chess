@@ -259,7 +259,7 @@ const App: React.FC = () => {
           <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-[#fffaf5] border border-black/5 shadow-sm flex items-center justify-center p-2">
             {PIECE_ICONS['WHITE']['KNIGHT']}
           </div>
-          <h1 className="serif italic text-5xl sm:text-6xl lg:text-7xl leading-none mt-5">MindBoard</h1>
+          <h1 className="serif italic text-5xl sm:text-6xl lg:text-7xl leading-none mt-5">Blindfold Trainer</h1>
           <p className="text-base lg:text-lg opacity-70 mt-3 max-w-lg text-balance">Train your board vision, one blindfold move at a time.</p>
         </div>
 
