@@ -303,7 +303,7 @@ const App: React.FC = () => {
             <span aria-hidden className="font-bold text-[#2f7d4f] mr-2">♞</span>
             <span className="brand">Blindfold Trainer</span>
           </h1>
-          <p className="text-base lg:text-lg text-[#6f6a62] mt-2 max-w-lg text-balance">Train your board vision, one blindfold move at a time.</p>
+          <p className="text-sm lg:text-base font-medium text-[#6f6a62] mt-2">by <span className="font-semibold text-[#1f1d1a]">Venture Chess Academy</span></p>
         </div>
 
         {/* How it works */}
