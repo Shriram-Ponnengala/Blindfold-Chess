@@ -66,6 +66,9 @@ const App: React.FC = () => {
     setIsPaused(false);
     setIsProcessing(false);
     setCountdown(null);
+    setDisabledOptions([]);
+    setPulsingPiece(null);
+    setMoveFeedback(null);
     setState({
       phase: 'OBSERVING',
       difficulty: diff,
@@ -125,6 +128,9 @@ const App: React.FC = () => {
     setIsPaused(false);
     setIsProcessing(false);
     setCountdown(null);
+    setDisabledOptions([]);
+    setPulsingPiece(null);
+    setMoveFeedback(null);
     setState({
       phase: 'START',
       difficulty: Difficulty.EASY,
@@ -256,21 +262,21 @@ const App: React.FC = () => {
       <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 py-10 lg:py-12 animate-in fade-in duration-700 box-border" style={{ color: PALETTE.PRIMARY_TEXT }}>
         {/* Brand */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-[#111] shadow-lg flex items-center justify-center p-2">
-            {PIECE_ICONS['WHITE']['KNIGHT']}
-          </div>
-          <h1 className="serif font-bold tracking-tight text-5xl sm:text-6xl lg:text-7xl leading-none mt-5">Blindfold Trainer</h1>
-          <p className="text-base lg:text-lg opacity-70 mt-3 max-w-lg text-balance">Train your board vision, one blindfold move at a time.</p>
+          <h1 className="leading-tight font-semibold text-4xl sm:text-5xl">
+            <span aria-hidden className="font-bold text-[#2f7d4f] mr-2">♞</span>
+            <span className="brand">Blindfold Trainer</span>
+          </h1>
+          <p className="text-base lg:text-lg text-[#6f6a62] mt-2 max-w-lg text-balance">Train your board vision, one blindfold move at a time.</p>
         </div>
 
         {/* How it works */}
         <div className="w-full max-w-3xl mt-8 lg:mt-10 grid grid-cols-3 gap-2 sm:gap-4">
           {steps.map((s) => (
             <div key={s.n} className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-center sm:text-left">
-              <span className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-[#111] text-white">{s.n}</span>
+              <span className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-[#1f1d1a] text-white">{s.n}</span>
               <div>
                 <p className="text-sm font-bold">{s.title}</p>
-                <p className="text-xs text-neutral-600 mt-0.5 hidden sm:block">{s.text}</p>
+                <p className="text-xs text-[#6f6a62] mt-0.5 hidden sm:block">{s.text}</p>
               </div>
             </div>
           ))}
@@ -278,34 +284,34 @@ const App: React.FC = () => {
 
         {/* Difficulty */}
         <div className="w-full max-w-3xl mt-8 lg:mt-10">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] opacity-50 mb-3 text-center sm:text-left">Choose a level</p>
+          <p className="text-sm font-semibold text-[#6f6a62] mb-3 text-center sm:text-left">Choose a level</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
             {levels.map((l) => (
               <button
                 key={l.diff}
                 onClick={() => startGame(l.diff)}
-                className="group relative text-left card card-hover rounded-2xl p-4 sm:p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#17695b] flex sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0"
+                className="group relative text-left card card-hover rounded-2xl p-4 sm:p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2f7d4f] flex sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0"
               >
                 <div className="flex items-center justify-between sm:mb-5">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center p-1.5 transition-transform group-hover:scale-105" style={{ backgroundColor: 'rgba(17,17,17,0.05)' }}>
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center p-1.5 transition-transform group-hover:scale-105" style={{ backgroundColor: 'rgba(31,29,26,0.05)' }}>
                     {PIECE_ICONS['BLACK'][l.icon]}
                   </div>
                   <div className="hidden sm:flex gap-1" aria-hidden="true">
                     {[1, 2, 3].map((d) => (
-                      <span key={d} className="w-1.5 h-4 rounded-full" style={{ backgroundColor: d <= l.dots ? '#17695b' : 'rgba(17,17,17,0.12)' }} />
+                      <span key={d} className="w-1.5 h-4 rounded-full" style={{ backgroundColor: d <= l.dots ? '#2f7d4f' : 'rgba(31,29,26,0.12)' }} />
                     ))}
                   </div>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-baseline gap-2">
                     <h3 className="text-xl font-extrabold">{l.name}</h3>
-                    <span className="text-[11px] font-semibold opacity-50">{l.tag}</span>
+                    <span className="text-[11px] font-semibold text-[#6f6a62]">{l.tag}</span>
                   </div>
-                  <p className="text-sm opacity-65 mt-1">{l.pieces} pieces · {l.detail}</p>
+                  <p className="text-sm text-[#6f6a62] mt-1">{l.pieces} pieces · {l.detail}</p>
                 </div>
                 <div className="sm:mt-5 flex items-center justify-between">
-                  <span className="hidden sm:inline text-xs opacity-50">2 min · 5 lives</span>
-                  <span className="w-9 h-9 rounded-full flex items-center justify-center transition-colors group-hover:bg-[#17695b] group-hover:text-white" style={{ backgroundColor: 'rgba(17,17,17,0.06)' }} aria-hidden="true">
+                  <span className="hidden sm:inline text-xs text-[#6f6a62]">2 min · 5 lives</span>
+                  <span className="w-9 h-9 rounded-full flex items-center justify-center transition-colors group-hover:bg-[#2f7d4f] group-hover:text-white" style={{ backgroundColor: 'rgba(31,29,26,0.06)' }} aria-hidden="true">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                   </span>
                 </div>
@@ -314,7 +320,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <p className="serif italic text-sm lg:text-base opacity-60 mt-10 text-center px-6">“Vision is the art of seeing what is invisible to others.”</p>
+        <p className="serif italic text-sm lg:text-base text-[#6f6a62] mt-10 text-center px-6">“Vision is the art of seeing what is invisible to others.”</p>
       </div>
     );
   };
@@ -323,7 +329,7 @@ const App: React.FC = () => {
     const sessionTypes = (['QUEEN', 'ROOK', 'BISHOP', 'KNIGHT'] as PieceType[]).filter(t => state.pieces.some(p => p.type === t));
     const timeLow = state.timeLeft < 15;
     const timeFrac = Math.max(0, Math.min(1, state.timeLeft / START_TIME));
-    const timeColor = state.timeLeft < 15 ? '#d9473f' : state.timeLeft < 30 ? '#c9822b' : '#17695b';
+    const timeColor = state.timeLeft < 15 ? '#c0392b' : state.timeLeft < 30 ? '#c9822b' : '#2f7d4f';
     const livesLeft = Math.max(0, MAX_STRIKES - state.strikes);
     const RING_C = 2 * Math.PI * 36;
     const iconBtn = "h-11 w-full flex items-center justify-center rounded-xl transition-all hover:bg-black/[0.06] active:scale-95 disabled:opacity-25 disabled:hover:bg-transparent";
@@ -336,14 +342,14 @@ const App: React.FC = () => {
             <div className="card rounded-2xl px-5 py-4 flex items-center justify-between" style={{ color: PALETTE.PRIMARY_TEXT }}>
               {/* Score */}
               <div className="flex flex-col min-w-[64px]">
-                <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-neutral-600">Score</span>
+                <span className="text-xs font-bold text-[#6f6a62]">Score</span>
                 <span className="text-[28px] font-extrabold tabular-nums leading-tight">{state.score}</span>
               </div>
 
               {/* Clock ring */}
               <div className="relative w-[76px] h-[76px] lg:w-[92px] lg:h-[92px]" role="timer" aria-label={`${state.timeLeft} seconds left`}>
                 <svg viewBox="0 0 84 84" className="w-full h-full -rotate-90">
-                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(17,17,17,0.1)" strokeWidth="6" />
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(31,29,26,0.1)" strokeWidth="6" />
                   <circle
                     cx="42" cy="42" r="36" fill="none"
                     stroke={timeColor}
@@ -361,19 +367,19 @@ const App: React.FC = () => {
 
               {/* Lives */}
               <div className="flex flex-col items-end min-w-[64px]">
-                <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-neutral-600">Lives</span>
+                <span className="text-xs font-bold text-[#6f6a62]">Lives</span>
                 <div className="flex gap-0.5 mt-1.5" aria-label={`${livesLeft} of ${MAX_STRIKES} lives left`}>
                   {Array.from({ length: MAX_STRIKES }).map((_, i) => {
                     const alive = i < livesLeft;
                     return (
                       <svg key={i} width="15" height="15" viewBox="0 0 24 24" className="transition-all duration-300" style={{ transform: alive ? 'scale(1)' : 'scale(0.85)' }}>
                         <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4.4.6 1.6.6 2 0 .7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"
-                          fill={alive ? '#d9473f' : 'none'} stroke={alive ? '#d9473f' : 'rgba(17,17,17,0.22)'} strokeWidth="2" />
+                          fill={alive ? '#c0392b' : 'none'} stroke={alive ? '#c0392b' : 'rgba(31,29,26,0.22)'} strokeWidth="2" />
                       </svg>
                     );
                   })}
                 </div>
-                <span className="text-[11px] font-semibold text-neutral-600 mt-1 tabular-nums">{livesLeft} left</span>
+                <span className="text-[11px] font-semibold text-[#6f6a62] mt-1 tabular-nums">{livesLeft} left</span>
               </div>
             </div>
 
@@ -398,22 +404,21 @@ const App: React.FC = () => {
           <section className="area-prompt flex flex-col items-center lg:items-start text-center lg:text-left select-none">
             {state.phase === 'OBSERVING' && (
               <>
-                <span className="text-[10px] font-bold uppercase tracking-[0.25em] opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>Step 1 · Memorize</span>
+                <span className="text-xs font-bold opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>Step 1 · Memorize</span>
                 <p className="serif font-semibold text-2xl lg:text-3xl mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>Study the position.</p>
-                <p className="text-sm opacity-60 mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>The pieces disappear when you start.</p>
+                <p className="text-sm text-[#6f6a62] mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>The pieces disappear when you start.</p>
                 <button
                   onClick={beginDrill}
                   disabled={countdown !== null}
-                  className="button-premium mt-4 w-full max-w-xs lg:max-w-none py-3.5 rounded-xl transition-all disabled:opacity-50"
-                  style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 12px 24px -12px rgba(0,0,0,0.45)` }}
+                  className="mt-4 w-full max-w-xs lg:max-w-none min-h-12 rounded-full bg-[#2f7d4f] px-6 text-base font-semibold text-white shadow-sm transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
                 >
-                  <span className="text-xs font-bold uppercase tracking-[0.2em]">{countdown !== null ? 'Get ready…' : "I'm ready"}</span>
+                  <span>{countdown !== null ? 'Get ready…' : "I'm ready"}</span>
                 </button>
               </>
             )}
             {state.phase === 'PLAYING' && (
               <>
-                <span className="text-[10px] font-bold uppercase tracking-[0.25em] opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>
+                <span className="text-xs font-bold opacity-45" style={{ color: PALETTE.PRIMARY_TEXT }}>
                   {isPaused ? 'Paused' : 'Step 2 · Which piece can reach'}
                 </span>
                 <p className="leading-none mt-1" style={{ color: PALETTE.PRIMARY_TEXT }}>
@@ -421,7 +426,7 @@ const App: React.FC = () => {
                     {isPaused || state.targetSquare === null ? '—' : squareToNotation(state.targetSquare).toLowerCase()}
                   </span>
                 </p>
-                <p className="text-sm opacity-60 mt-2" style={{ color: PALETTE.PRIMARY_TEXT }}>
+                <p className="text-sm text-[#6f6a62] mt-2" style={{ color: PALETTE.PRIMARY_TEXT }}>
                   {isPaused ? 'Resume when you’re ready.' : 'Tap the piece that can move there.'}
                 </p>
               </>
@@ -434,7 +439,7 @@ const App: React.FC = () => {
               <ChessBoard pieces={state.pieces} targetSquare={isPaused ? null : state.targetSquare} lastMoveLine={isPaused ? null : state.lastMoveLine} />
 
               {countdown !== null && (
-                <div className="absolute inset-0 flex items-center justify-center z-[60] pointer-events-none rounded-[14px]" style={{ background: 'rgba(40, 15, 10, 0.35)' }}>
+                <div className="absolute inset-0 flex items-center justify-center z-[60] pointer-events-none rounded-[6px]" style={{ background: 'rgba(31, 29, 26, 0.45)' }}>
                   <div key={countdown} className="text-8xl lg:text-9xl font-bold serif animate-in zoom-in fade-in duration-500 drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]" style={{ color: PALETTE.SECONDARY_BG }}>
                     {countdown > 0 ? countdown : 'GO!'}
                   </div>
@@ -442,12 +447,12 @@ const App: React.FC = () => {
               )}
 
               {isPaused && (
-                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-5 animate-in fade-in duration-300 rounded-[14px] backdrop-blur-md" style={{ background: 'rgba(255, 250, 244, 0.88)' }}>
+                <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-5 animate-in fade-in duration-300 rounded-[6px] backdrop-blur-md" style={{ background: 'rgba(246, 243, 238, 0.9)' }}>
                   <h2 className="serif font-semibold text-3xl lg:text-4xl" style={{ color: PALETTE.PRIMARY_TEXT }}>Paused</h2>
                   <div className="flex flex-col gap-2.5 w-56">
-                    <button onClick={togglePause} className="button-premium py-3 rounded-xl font-bold uppercase tracking-[0.18em] text-[11px]" style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG }}>Resume</button>
-                    <button onClick={restartCurrentDrill} className="button-premium py-3 rounded-xl font-bold uppercase tracking-[0.18em] text-[11px]" style={{ backgroundColor: PALETTE.SECONDARY_BG, border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}>Restart</button>
-                    <button onClick={goHome} className="button-premium py-3 rounded-xl font-bold uppercase tracking-[0.18em] text-[11px]" style={{ backgroundColor: PALETTE.SECONDARY_BG, border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}>Exit to home</button>
+                    <button onClick={togglePause} className="min-h-12 rounded-full bg-[#2f7d4f] px-6 text-base font-semibold text-white shadow-sm transition hover:brightness-110 active:scale-[0.98]">Resume</button>
+                    <button onClick={restartCurrentDrill} className="min-h-12 rounded-full bg-black/5 px-6 text-base font-semibold text-[#1f1d1a] transition hover:bg-black/10 active:scale-[0.98]">Restart</button>
+                    <button onClick={goHome} className="min-h-12 rounded-full bg-black/5 px-6 text-base font-semibold text-[#1f1d1a] transition hover:bg-black/10 active:scale-[0.98]">Exit to home</button>
                   </div>
                 </div>
               )}
@@ -474,13 +479,13 @@ const App: React.FC = () => {
                   disabled={isDisabled}
                   className={`piece-btn card card-hover relative flex flex-col items-center justify-center gap-1.5 py-3 rounded-2xl group ${isPulsing ? 'animate-subtle-pulse' : ''}`}
                   style={{
-                    ...(isPulsing ? { borderColor: '#d9473f' } : feedback?.status === 'correct' ? { borderColor: '#17695b' } : {}),
+                    ...(isPulsing ? { borderColor: '#c0392b' } : feedback?.status === 'correct' ? { borderColor: '#2f7d4f' } : {}),
                     opacity: ruledOut ? 0.3 : 1,
                   }}
                 >
                   {feedback && (
-                    <div className={`absolute inset-0 flex items-center justify-center z-20 rounded-xl animate-in fade-in duration-200 ${feedback.status === 'correct' ? 'bg-[#e7f3f0]' : 'bg-[#fbeceb]'}`}>
-                      <span className={`font-bold text-[11px] uppercase tracking-wider ${feedback.status === 'correct' ? 'text-[#17695b]' : 'text-[#b3332c]'}`}>
+                    <div className={`absolute inset-0 flex items-center justify-center z-20 rounded-xl animate-in fade-in duration-200 ${feedback.status === 'correct' ? 'bg-[#2f7d4f1a]' : 'bg-[#c0392b1a]'}`}>
+                      <span className={`font-bold text-[11px] ${feedback.status === 'correct' ? 'text-[#2f7d4f]' : 'text-[#c0392b]'}`}>
                         {feedback.status === 'correct' ? '✓ Correct' : '✕ Wrong'}
                       </span>
                     </div>
@@ -515,7 +520,7 @@ const App: React.FC = () => {
           {/* Why it ended */}
           <span
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
-            style={outOfLives ? { backgroundColor: '#fbeceb', color: '#a3352e' } : { backgroundColor: 'rgba(23,105,91,0.12)', color: '#17695b' }}
+            style={outOfLives ? { backgroundColor: '#c0392b1a', color: '#c0392b' } : { backgroundColor: 'rgba(47,125,79,0.12)', color: '#2f7d4f' }}
           >
             {outOfLives ? (
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.2 4.3 2.4.4.6 1.6.6 2 0 .7-1.2 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>
@@ -529,25 +534,25 @@ const App: React.FC = () => {
           <div className="w-full mt-5 card rounded-3xl p-6 sm:p-8">
             <div className="flex items-center justify-between gap-6">
               <div className="text-left">
-                <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-neutral-600">Final score</span>
+                <span className="text-xs font-bold text-[#6f6a62]">Final score</span>
                 <div className="text-6xl sm:text-7xl font-extrabold tabular-nums leading-none mt-1">{state.score}</div>
               </div>
               <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0">
                 <svg viewBox="0 0 84 84" className="w-full h-full -rotate-90">
-                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(17,17,17,0.1)" strokeWidth="6" />
-                  <circle cx="42" cy="42" r="36" fill="none" stroke="#17695b" strokeWidth="6" strokeLinecap="round"
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(31,29,26,0.1)" strokeWidth="6" />
+                  <circle cx="42" cy="42" r="36" fill="none" stroke="#2f7d4f" strokeWidth="6" strokeLinecap="round"
                     strokeDasharray={2 * Math.PI * 36} strokeDashoffset={2 * Math.PI * 36 * (1 - accuracy / 100)} />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="serif font-bold text-3xl sm:text-4xl leading-none">{grade.rank}</span>
-                  <span className="text-[9px] font-bold uppercase tracking-[0.15em] opacity-50 mt-0.5">Grade</span>
+                  <span className="text-xs font-bold text-[#6f6a62] mt-0.5">Grade</span>
                 </div>
               </div>
             </div>
 
             <div className="text-left mt-6 pt-5 border-t border-black/5">
               <p className="serif font-semibold text-xl sm:text-2xl">{grade.label}</p>
-              <p className="text-sm opacity-65 mt-1.5 leading-relaxed">{grade.desc}</p>
+              <p className="text-sm text-[#6f6a62] mt-1.5 leading-relaxed">{grade.desc}</p>
             </div>
           </div>
 
@@ -556,7 +561,7 @@ const App: React.FC = () => {
             {stats.map((s) => (
               <div key={s.label} className="card rounded-2xl py-3 px-1">
                 <div className="text-lg sm:text-xl font-extrabold tabular-nums">{s.value}</div>
-                <div className="text-[10px] font-semibold opacity-50 mt-0.5">{s.label}</div>
+                <div className="text-xs font-medium text-[#6f6a62] mt-0.5">{s.label}</div>
               </div>
             ))}
           </div>
@@ -565,22 +570,20 @@ const App: React.FC = () => {
           <div className="w-full flex flex-col sm:flex-row gap-2.5 mt-7">
             <button
               onClick={restartCurrentDrill}
-              className="button-premium flex-1 py-3.5 rounded-xl text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center justify-center gap-2"
-              style={{ backgroundColor: PALETTE.PRIMARY_TEXT, color: PALETTE.SECONDARY_BG, boxShadow: `0 12px 24px -12px rgba(0,0,0,0.45)` }}
+              className="flex-1 inline-flex items-center justify-center gap-2 min-h-12 rounded-full bg-[#2f7d4f] px-6 text-base font-semibold text-white shadow-sm transition hover:brightness-110 active:scale-[0.98]"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
               Play again
             </button>
             <button
               onClick={goHome}
-              className="button-premium flex-1 py-3.5 rounded-xl text-xs font-bold uppercase tracking-[0.2em] bg-white"
-              style={{ border: `1px solid ${PALETTE.PRIMARY_TEXT}20`, color: PALETTE.PRIMARY_TEXT }}
+              className="flex-1 min-h-12 rounded-full bg-black/5 px-6 text-base font-semibold text-[#1f1d1a] transition hover:bg-black/10 active:scale-[0.98]"
             >
               Change level
             </button>
           </div>
 
-          <p className="serif italic text-sm opacity-55 mt-8">“Visualization improves by doing.”</p>
+          <p className="serif italic text-sm text-[#6f6a62] mt-8">“Visualization improves by doing.”</p>
         </div>
       </div>
     );
@@ -588,8 +591,6 @@ const App: React.FC = () => {
 
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center overflow-x-hidden">
-      <div className="fixed -top-32 -right-32 w-96 h-96 rounded-full opacity-[0.03] pointer-events-none" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
-      <div className="fixed -bottom-32 -left-32 w-96 h-96 rounded-full opacity-[0.03] pointer-events-none" style={{ backgroundColor: PALETTE.PRIMARY_TEXT }} />
       <main className="relative z-20 w-full h-full flex flex-col items-center flex-grow">
         {state.phase === 'START' && renderStartScreen()}
         {(state.phase === 'OBSERVING' || state.phase === 'PLAYING') && renderGameScreen()}

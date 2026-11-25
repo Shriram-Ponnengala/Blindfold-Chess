@@ -33,16 +33,21 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveL
 
   return (
     <div
-      className="relative p-[6px] sm:p-[8px] rounded-[14px]"
+      className="relative p-[10px] sm:p-[15px] rounded-[6px]"
       style={{
-        background: `linear-gradient(145deg, ${BOARD_THEME.FRAME_LIGHT}, ${BOARD_THEME.FRAME})`,
-        boxShadow:
-          '0 30px 60px -20px rgba(60, 25, 15, 0.45), 0 12px 24px -12px rgba(60, 25, 15, 0.35), inset 0 1px 0 rgba(255,255,255,0.12)',
+        border: '1px solid color-mix(in srgb, #7d371d 35%, black)',
+        // VCA Studio wood frame: faint grain over mahogany, lit from the top-left
+        background: [
+          'repeating-linear-gradient(100deg, rgb(255 255 255 / 0.035) 0 2px, transparent 2px 7px)',
+          'repeating-linear-gradient(80deg, rgb(0 0 0 / 0.05) 0 1px, transparent 1px 11px)',
+          `linear-gradient(135deg, color-mix(in srgb, ${BOARD_THEME.FRAME} 90%, white) 0%, color-mix(in srgb, ${BOARD_THEME.FRAME} 88%, black) 45%, ${BOARD_THEME.FRAME} 70%, color-mix(in srgb, ${BOARD_THEME.FRAME} 74%, black) 100%)`,
+        ].join(', '),
+        boxShadow: 'inset 0 1px 0 rgb(255 255 255 / 0.18), inset 0 -1px 0 rgb(0 0 0 / 0.35), 0 1px 2px rgb(0 0 0 / 0.25), 0 18px 40px -20px rgb(0 0 0 / 0.35)',
       }}
     >
       <div
-        className="board-size relative grid grid-cols-8 grid-rows-8 overflow-hidden rounded-[8px] select-none"
-        style={{ boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.18)' }}
+        className="board-size relative grid grid-cols-8 grid-rows-8 overflow-hidden select-none"
+        style={{ boxShadow: '0 0 0 1px rgb(0 0 0 / 0.45)' }}
       >
         {Array.from({ length: 64 }).map((_, i) => {
           const light = isLight(i);
@@ -52,7 +57,7 @@ const ChessBoard: React.FC<ChessBoardProps> = ({ pieces, targetSquare, lastMoveL
           const isTarget = targetSquare === i;
           const isFrom = lastMoveLine?.[0] === i;
           const isTo = lastMoveLine?.[1] === i;
-          const coordColor = light ? BOARD_THEME.DARK : BOARD_THEME.LIGHT;
+          const coordColor = light ? BOARD_THEME.COORD_LIGHT : BOARD_THEME.COORD_DARK;
 
           return (
             <div
